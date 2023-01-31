@@ -17,7 +17,7 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
 RUN rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-extra --install kernel-cachyos-bore-lto
 
 
-RUN rpm-ostree override remove firefox firefox-langpacks gnome-terminal && \
+RUN rpm-ostree override remove firefox firefox-langpacks && \
     rpm-ostree install libratbag-ratbagd distrobox gnome-tweaks vim blackbox-terminal && \
     rm -f /etc/yum.repos.d/lyessaadi-blackbox.repo && \
     rm -f /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
