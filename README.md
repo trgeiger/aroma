@@ -2,7 +2,7 @@
 
 [![build-taydora](https://github.com/trgeiger/taydora/actions/workflows/build.yml/badge.svg)](https://github.com/trgeiger/taydora/actions/workflows/build.yml)
 
-A base image with a (mostly) stock Fedora Silverblue. Help us make a sweet base image: Pull requests and improvements appreciated and encouraged!   
+Silverblue customized with my personal base image preferences.
 
 ## Usage
 
@@ -21,13 +21,15 @@ The `latest` tag will automatically point to the latest build.
 - Start with a base Fedora Silverblue 37 image
 - Removes Firefox from the base image
 - Adds the following packages to the base image:
-  - distrobox and gnome-tweaks
+  - distrobox
+  - vim
+  - zsh
+  - libratbag-ratbagd (for Piper mouse configuration app)
+  - VSCode from the official Microsoft repo
+  - fontconfig-font-replacements (from COPR)
+  - Gnome with variable refresh rate patch (from COPR)
+  - CachyOS BORE LTO kernel (from COPR)
 
-## Applications
-
-
-## Further Customization
-  
 ## Verification
 
 These images are signed with sisgstore's [cosign](https://docs.sigstore.dev/cosign/overview/). You can verify the signature by downloading the `cosign.pub` key from this repo and running the following command:

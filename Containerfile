@@ -25,4 +25,6 @@ RUN rpm-ostree override remove firefox firefox-langpacks && \
     rpm-ostree install libratbag-ratbagd vim zsh distrobox fontconfig-font-replacements code && \
     rm -f /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     rm -f /etc/yum.repos.d/_copr_bieszczaders-kernel-cachyos-fedora.repo && \
+    rm -f /etc/yum.repos.d/_copr_hyperreal-better_fonts.repo && \
+    rm -f /etc/yum.repos.d/vscode.repo && \
     ostree container commit
