@@ -24,4 +24,6 @@ RUN rpm-ostree override remove firefox firefox-langpacks && \
     rm -f /etc/yum.repos.d/_copr_bieszczaders-kernel-cachyos-fedora.repo && \
     rm -f /etc/yum.repos.d/_copr_hyperreal-better_fonts.repo && \
     rm -f /etc/yum.repos.d/vscode.repo && \
+    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
+    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
     ostree container commit
