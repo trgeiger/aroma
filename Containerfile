@@ -6,7 +6,8 @@ FROM quay.io/fedora-ostree-desktops/silverblue:${FEDORA_MAJOR_VERSION}
 COPY etc /etc
 
 # Add udev rules for more hardware support
-COPY --from=ghcr.io/ublue-os/udev-rules:latest /ublue-os-udev-rules /
+COPY --from=ghcr.io/ublue-os/config:latest /files/ublue-os-udev-rules /
+COPY --from=ghcr.io/ublue-os/config:latest /files/ublue-os-update-services /
 
 # Add/activate repo files
 RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \ 
@@ -39,7 +40,5 @@ RUN rm -f /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
     sed -i 's/#AutomaticUpdatePolicy.*/AutomaticUpdatePolicy=stage/' /etc/rpm-ostreed.conf && \
-    systemctl enable rpm-ostreed-automatic.timer && \
-    systemctl enable flatpak-automatic.timer && \
     systemctl enable com.system76.Scheduler.service && \
     ostree container commit
