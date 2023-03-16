@@ -21,15 +21,7 @@ RUN echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem && \
     rpm-ostree override remove firefox firefox-langpacks gnome-classic-session && \
-    rpm-ostree install \
-    libratbag-ratbagd \
-    vim \
-    zsh \
-    distrobox \
-    fontconfig-font-replacements \
-    code \
-    adw-gtk3 \
-    system76-scheduler \
+    rpm-ostree install libratbag-ratbagd vim zsh distrobox fontconfig-font-replacements code adw-gtk3 system76-scheduler
 
 # Cleanup and finishing touches
 RUN rm -f /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
@@ -39,6 +31,8 @@ RUN rm -f /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     rm -f /etc/yum.repos.d/vscode.repo && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
-    sed -i 's/#AutomaticUpdatePolicy.*/AutomaticUpdatePolicy=stage/' /etc/rpm-ostreed.conf && \
+    systemctl enable rpm-ostreed-automatic.timer && \
+    systemctl enable flatpak-system-update.timer && \
+    systemctl --global enable flatpak-user-update.timer && \
     systemctl enable com.system76.Scheduler.service && \
     ostree container commit
