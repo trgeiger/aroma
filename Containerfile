@@ -1,14 +1,10 @@
 ARG FEDORA_MAJOR_VERSION=37
 
 #FROM quay.io/fedora-ostree-desktops/silverblue:${FEDORA_MAJOR_VERSION}
-FROM ghcr.io/ublue-os/silverblue-main:{FEDORA_MAJOR_VERSION}
+FROM ghcr.io/ublue-os/silverblue-main:${FEDORA_MAJOR_VERSION}
 # See https://pagure.io/releng/issue/11047 for final location
 
 COPY etc /etc
-
-# Add udev rules for more hardware support
-COPY --from=ghcr.io/ublue-os/config:latest /files/ublue-os-udev-rules /
-COPY --from=ghcr.io/ublue-os/config:latest /files/ublue-os-update-services /
 
 # Add/activate repo files
 RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \ 
