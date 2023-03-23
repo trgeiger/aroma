@@ -18,7 +18,7 @@ RUN echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem && \
     rpm-ostree override remove gnome-classic-session && \
-    rpm-ostree install libratbag-ratbagd zsh distrobox fontconfig-font-replacements code adw-gtk3 system76-scheduler
+    rpm-ostree install libratbag-ratbagd zsh fontconfig-font-replacements code adw-gtk3 system76-scheduler
 
 # Cleanup and finishing touches
 RUN rm -f /etc/yum.repos.d/_copr_*.repo && \
