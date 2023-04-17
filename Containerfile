@@ -1,8 +1,6 @@
-ARG FEDORA_MAJOR_VERSION=37
+ARG FEDORA_MAJOR_VERSION=38
 
-#FROM quay.io/fedora-ostree-desktops/silverblue:${FEDORA_MAJOR_VERSION}
 FROM ghcr.io/ublue-os/silverblue-main:${FEDORA_MAJOR_VERSION}
-# See https://pagure.io/releng/issue/11047 for final location
 
 COPY etc /etc
 
@@ -19,8 +17,6 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
 
 # Cleanup and finishing touches
 RUN rm -f /etc/yum.repos.d/_copr_*.repo && \
-    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
-    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
     systemctl enable rpm-ostreed-automatic.timer && \
     systemctl enable flatpak-system-update.timer && \
     systemctl --global enable flatpak-user-update.timer && \
