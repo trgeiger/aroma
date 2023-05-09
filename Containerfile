@@ -16,7 +16,7 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
     rpm-ostree override remove gnome-classic-session kernel-devel-matched && \
     rpm-ostree install libratbag-ratbagd zsh fontconfig-font-replacements adw-gtk3 system76-scheduler
 
-RUN rpm-ostree cliwrap install-to-root && \
+RUN rpm-ostree cliwrap install-to-root / && \
     rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-extra --install kernel-cachyos-bore-lto --install kernel-cachyos-bore-lto-modules --install kernel-cachyos-bore-lto-core
 
 # Cleanup and finishing touches
