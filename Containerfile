@@ -13,7 +13,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/rep
 
 # Install and override packages
 # RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:calcastor:gnome-patched mutter && \
-RUN rpm-ostree override remove gnome-classic-session kernel-devel-matched && \
+RUN rpm-ostree override remove kernel-devel-matched && \
 #    rpm-ostree install zsh fontconfig-font-replacements adw-gtk3 system76-scheduler
     rpm-ostree install zsh
 
