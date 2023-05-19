@@ -13,7 +13,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/calcastor/gnome-patched/repo/fe
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:calcastor:gnome-patched mutter && \
     rpm-ostree override remove gnome-classic-session kernel-devel-matched && \
-    rpm-ostree install zsh fontconfig-font-replacements steam
+    rpm-ostree install zsh fontconfig-font-replacements
 
 RUN rpm-ostree cliwrap install-to-root / && \
     rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-extra --install kernel-cachyos-bore-lto --install kernel-cachyos-bore-lto-modules --install kernel-cachyos-bore-lto-core
