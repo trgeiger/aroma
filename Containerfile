@@ -12,7 +12,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/calcastor/gnome-patched/repo/fe
 
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:calcastor:gnome-patched mutter && \
-    rpm-ostree override remove kernel-devel-matched gnome-classic-session firefox && \
+    rpm-ostree override remove kernel-devel-matched gnome-classic-session && \
     rpm-ostree install zsh fontconfig-font-replacements xrandr
 
 RUN rpm-ostree cliwrap install-to-root / && \
