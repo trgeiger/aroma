@@ -13,10 +13,21 @@ RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland && \
     rpm-ostree override remove kernel-devel-matched gnome-classic-session && \
-    rpm-ostree install zsh fontconfig-font-replacements xrandr
+    rpm-ostree install fontconfig-font-replacements xrandr
 
 RUN rpm-ostree cliwrap install-to-root / && \
     rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-extra --install kernel-cachyos-bore-lto --install kernel-cachyos-bore-lto-modules --install kernel-cachyos-bore-lto-core
+
+# Add inter font, update dconf db, clear font cache
+RUN curl -sL $(curl -s https://api.github.com/repos/rsms/inter/releases | jq -r '.[0].assets[0].browser_download_url') -o /tmp/inter.zip && \
+    mkdir -p /tmp/inter /usr/share/fonts/inter && \
+    unzip /tmp/inter.zip -d /tmp/inter/ && \
+    mv /tmp/inter/*.ttf /tmp/inter/*.ttc /tmp/inter/LICENSE.txt /usr/share/fonts/inter/ && \
+    systemctl unmask dconf-update.service && \
+    systemctl enable dconf-update.service && \
+    fc-cache -f /usr/share/fonts/inter && \
+    rm -rf /tmp/* /var* && mkdir -p /var/tmp && chmod -R 1777 /var/tmp
+
 
 # Cleanup and finishing touches
 RUN rm -f /etc/yum.repos.d/_copr_*.repo && \
