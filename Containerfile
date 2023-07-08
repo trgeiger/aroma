@@ -23,6 +23,10 @@ RUN curl -sL $(curl -s https://api.github.com/repos/rsms/inter/releases | jq -r 
     mkdir -p /tmp/inter /usr/share/fonts/inter && \
     unzip /tmp/inter.zip -d /tmp/inter/ && \
     mv /tmp/inter/*.ttf /tmp/inter/*.ttc /tmp/inter/LICENSE.txt /usr/share/fonts/inter/ && \
+    curl -sL $(curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases | jq -r '.[0].assets | map(select(.name == "FiraCode.zip"))[0].browser_download_url') -o /tmp/firacode-nerdfont.zip && \
+    mkdir -p /tmp/firacode-nerdfont /usr/share/fonts/firacode-nerdfont && \
+    unzip /tmp/firacode-nerdfont.zip -d /tmp/firacode-nerdfont/ && \
+    mv /tmp/firacode-nerdfont/*.ttf /tmp/firacode-nerdfont/LICENSE /usr/share/fonts/firacode-nerdfont/ && \
     systemctl unmask dconf-update.service && \
     systemctl enable dconf-update.service && \
     fc-cache -f /usr/share/fonts/inter && \
