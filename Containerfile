@@ -13,7 +13,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora
 # Install and override packages
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland && \
     rpm-ostree override remove kernel-devel-matched gnome-classic-session && \
-    rpm-ostree install fontconfig-font-replacements xrandr
+    rpm-ostree install zsh fontconfig-font-replacements xrandr
 
 RUN rpm-ostree cliwrap install-to-root / && \
     rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-extra --install kernel-cachyos-bore-lto --install kernel-cachyos-bore-lto-modules --install kernel-cachyos-bore-lto-core
