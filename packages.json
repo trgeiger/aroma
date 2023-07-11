@@ -4,33 +4,20 @@
             "all": [
                 "gnome-shell-extension-appindicator",
                 "gnome-shell-extension-dash-to-dock",
-                "gnome-shell-extension-blur-my-shell", 
-                "gnome-shell-extension-gsconnect", 
-                "nautilus-gsconnect", 
-                "libgda",
-                "libgda-sqlite",
-                "libratbag-ratbagd",
-                "podman-docker",
-                "podman-compose",
-                "tailscale",
-                "wireguard-tools",
-                "xprop",
-                "yaru-theme"
-            ]         
+                zsh,
+                fontconfig-font-replacements,
+                xrandr,
+                system76-scheduler
+            ]
         },
         "exclude": {
             "all": [
                 "firefox",
-                "firefox-langpacks"
+                "firefox-langpacks",
+                gnome-classic-session,
+                gnome-tour,
+                yelp
             ]
-        }
-    },
-    "37": {
-        "include": {
-            "all": []
-        },
-        "exclude": {
-            "all": []
         }
     },
     "38": {
