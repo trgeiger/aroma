@@ -2,21 +2,21 @@
     "all": {
         "include": {
             "all": [
-                "gnome-shell-extension-appindicator",
                 "gnome-shell-extension-dash-to-dock",
-                zsh,
-                fontconfig-font-replacements,
-                xrandr,
-                system76-scheduler
+                "zsh",
+                "python3-pip",
+                "fontconfig-font-replacements",
+                "xrandr",
+                "system76-scheduler"
             ]
         },
         "exclude": {
             "all": [
                 "firefox",
                 "firefox-langpacks",
-                gnome-classic-session,
-                gnome-tour,
-                yelp
+                "gnome-classic-session",
+                "gnome-tour",
+                "yelp"
             ]
         }
     },
