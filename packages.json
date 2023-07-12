@@ -5,7 +5,6 @@
                 "gnome-shell-extension-dash-to-dock",
                 "zsh",
                 "python3-pip",
-                "fontconfig-font-replacements",
                 "xrandr",
                 "system76-scheduler"
             ]
