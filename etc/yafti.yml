@@ -1,0 +1,81 @@
+title: Welcome to uBlue
+properties:
+  mode: "run-on-change"
+screens:
+  first-screen:
+    source: yafti.screen.title
+    values:
+      title: "Welcome to Bluefin (Alpha)"
+      icon: "/path/to/icon"
+      description: |
+        Pick some applications to get started
+  can-we-modify-your-flatpaks:
+    source: yafti.screen.consent
+    values:
+      title: Welcome, Traveler
+      condition:
+        run: flatpak remotes --system | grep fedora
+      description: |
+        WARNING: This will modify your Flatpaks if you are rebasing! If you do not want to do this exit the installer.
+      actions:
+        - run: /usr/lib/fedora-third-party/fedora-third-party-opt-out
+        - run: /usr/bin/fedora-third-party disable
+        - run: flatpak remote-delete fedora --force
+        - run: flatpak remove --system --noninteractive --all
+        - run: flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+  applications:
+    source: yafti.screen.package
+    values:
+      title: Application Installation
+      show_terminal: true
+      package_manager: yafti.plugin.flatpak
+      groups:
+        Core:
+          description: Core Applications
+          default: true
+          packages:
+          - Blackbox Terminal: com.raggesilver.BlackBox
+          - Calculator: org.gnome.Calculator
+          - Characters: org.gnome.Characters
+          - Document Viewer: org.gnome.Evince
+          - Extensions Manager: com.mattjakeman.ExtensionManager
+          - Mozilla Firefox: org.mozilla.firefox
+          - Flatseal Permissions Manager: com.github.tchx84.Flatseal
+          - Logs: org.gnome.Logs
+          - Nautilus Preview: org.gnome.NautilusPreviewer
+          - Weather: org.gnome.Weather
+          - Disk Usage Analyzer: org.gnome.baobab
+          - Image Viewer: org.gnome.Loupe
+          - Font Viewer: org.gnome.font-viewer
+        Gaming:
+          description: "Rock and Stone!"
+          default: false
+          packages:
+          - Bottles: com.usebottles.bottles
+          - Discord: com.discordapp.Discord
+          - MangoHUD: org.freedesktop.Platform.VulkanLayer.MangoHud//22.08
+          - Steam: com.valvesoftware.Steam
+          - Gamescope for Steam: com.valvesoftware.Steam.Utility.gamescope
+          - Proton Updater for Steam: net.davidotek.pupgui2
+        Others:
+          description: Other stuff you might want
+          default: false
+          packages:
+          - Obsidian: md.obsidian.Obsidian
+          - Slack: com.slack.Slack
+          - Google Chrome: com.google.Chrome
+          - Text Editor: org.gnome.TextEditor
+          - Clocks: org.gnome.clocks
+          
+  final-screen:
+    source: yafti.screen.title
+    values:
+      title: "All done!"
+      icon: "/path/to/icon"
+      links:
+        - "Install More Applications": 
+            run: /usr/bin/gnome-software
+        - "Website":
+            run: /usr/bin/xdg-open https://ublue.it
+      description: |
+        That's it!
