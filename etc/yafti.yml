@@ -1,14 +1,14 @@
-title: Welcome to uBlue
+title: Welcome to Taydora
 properties:
   mode: "run-on-change"
 screens:
   first-screen:
     source: yafti.screen.title
     values:
-      title: "Welcome to Bluefin (Alpha)"
+      title: "Welcome to Taydora"
       icon: "/path/to/icon"
       description: |
-        Pick some applications to get started
+        Let's install some apps
   can-we-modify-your-flatpaks:
     source: yafti.screen.consent
     values:
