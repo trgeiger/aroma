@@ -23,11 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        image_flavor: [main]
+        base_name: [taydora]
         major_version: [38]
         include:
           - major_version: 38
-            is_latest: true
-            is_stable: true
+            is_latest_version: true
+            is_stable_version: true
     steps: 
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
