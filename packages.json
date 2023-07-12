@@ -7,7 +7,7 @@
                 "python3-pip",
                 "fontconfig-font-replacements",
                 "xrandr",
-                "ananicy-cpp"
+                "system76-scheduler"
             ]
         },
         "exclude": {
@@ -17,7 +17,8 @@
                 "gnome-classic-session",
                 "gnome-tour",
                 "yelp",
-                "kernel-devel-matched"
+                "htop",
+                "nvtop"
             ]
         }
     },
