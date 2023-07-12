@@ -1,5 +1,5 @@
 [org/gnome/shell] 
-enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 'io.github.mreditor.gnome-shell-extensions.scroll-panel', 'dash-to-dock@micxgx.gmail.com', 'replace-activities-label@leleat-on-github', 'auto-activities@CleoMenezesJr.github.io']
+enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 'io.github.mreditor.gnome-shell-extensions.scroll-panel', 'dash-to-dock@micxgx.gmail.com', 'replace-activities-label@leleat-on-github']
 
 [org/gnome/desktop/interface]
 font-name="Inter 11"

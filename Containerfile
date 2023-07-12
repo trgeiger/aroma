@@ -17,14 +17,16 @@ ADD build.sh /tmp/build.sh
 
 # COPR repos
 RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/hyperreal/better_fonts/repo/fedora-$(rpm -E %fedora)/hyperreal-better_fonts-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_hyperreal-better_fonts.repo
+    wget https://copr.fedorainfracloud.org/coprs/hyperreal/better_fonts/repo/fedora-$(rpm -E %fedora)/hyperreal-better_fonts-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_hyperreal-better_fonts.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_bieszczaders-kernel-cachyos-fedora.repo
 
 # Overrides
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland
-
+RUN rpm-ostree cliwrap install-to-root / && \
+    rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra --install kernel-cachyos-bore-lto
 
 RUN /tmp/build.sh && \
+    pip install --prefix=/usr yafti && \
     curl -sL $(curl -s https://api.github.com/repos/rsms/inter/releases | jq -r '.[0].assets[0].browser_download_url') -o /tmp/inter.zip && \
     mkdir -p /tmp/inter /usr/share/fonts/inter && \
     unzip /tmp/inter.zip -d /tmp/inter/ && \
@@ -37,11 +39,11 @@ RUN /tmp/build.sh && \
     systemctl enable dconf-update.service && \
     fc-cache -f /usr/share/fonts/inter && \
     fc-cache -f /usr/share/fonts/intelonemono-nerdfont && \
-    rm -rf /tmp/* /var* && mkdir -p /var/tmp && \
+    rm -rf /tmp/* /var* && \
+    mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \
     rm -f /etc/yum.repos.d/_copr_*.repo && \
     systemctl enable rpm-ostreed-automatic.timer && \
     systemctl enable flatpak-system-update.timer && \
     systemctl --global enable flatpak-user-update.timer && \
-    systemctl enable com.system76.Scheduler.service && \
     ostree container commit
