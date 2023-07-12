@@ -16,7 +16,8 @@
                 "firefox-langpacks",
                 "gnome-classic-session",
                 "gnome-tour",
-                "yelp"
+                "yelp",
+                "kernel-devel-matched"
             ]
         }
     },
