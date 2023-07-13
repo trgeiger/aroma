@@ -1,10 +1,8 @@
-ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-silverblue}"
-ARG IMAGE_FLAVOR="${IMAGE_FLAVOR:-main}"
-ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME-$IMAGE_FLAVOR}"
-ARG BASE_IMAGE="ghcr.io/ublue-os/${SOURCE_IMAGE}"
+ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/silverblue"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-38}"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS taydora
+#FROM quay.io/fedora-ostree-desktops/silverblue:38 as taydora
 
 ARG IMAGE_NAME="${IMAGE_NAME}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION}"
@@ -15,15 +13,20 @@ COPY usr /usr
 ADD packages.json /tmp/packages.json
 ADD build.sh /tmp/build.sh
 
+COPY --from=ghcr.io/ublue-os/config:latest /rpms /tmp/rpms
+COPY --from=ghcr.io/ublue-os/akmods:${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
+
 # COPR repos
 RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/ublue-os/gnome-software/repo/fedora-$(rpm -E %fedora)/ublue-os-gnome-software-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-gnome-software.repo
+    wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachyos.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-addons-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachy_os_addons.repo
 
 
 # Overrides
-RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland && \
-    rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:gnome-software gnome-software gnome-software-rpm-ostree
+RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland
+RUN rpm-ostree cliwrap install-to-root / && \
+    rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra --install kernel-cachyos-bore --install kernel-cachyos-bore-devel --install kernel-cachyos-bore-devel-matched
 
 RUN /tmp/build.sh && \
     pip install --prefix=/usr yafti && \
@@ -46,5 +49,5 @@ RUN /tmp/build.sh && \
     systemctl enable rpm-ostreed-automatic.timer && \
     systemctl enable flatpak-system-update.timer && \
     systemctl --global enable flatpak-user-update.timer && \
-    systemctl enable com.system76.Scheduler.service && \
+    systemctl enable ananicy-cpp.service && \
     ostree container commit

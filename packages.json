@@ -2,11 +2,23 @@
     "all": {
         "include": {
             "all": [
-                "gnome-shell-extension-dash-to-dock",
                 "zsh",
                 "python3-pip",
                 "xrandr",
-                "system76-scheduler"
+                "distrobox",
+                "intel-media-driver",
+                "just",
+                "kernel-tools",
+                "openssl",
+                "podman-compose",
+                "vim",
+                "zstd",
+                "adw-gtk3-theme",
+                "gnome-tweaks",
+                "raw-thumbnailer",
+                "pipewire-codec-aptx",
+                "libratbag-ratbagd",
+                "ananicy-cpp"
             ]
         },
         "exclude": {
@@ -15,9 +27,7 @@
                 "firefox-langpacks",
                 "gnome-classic-session",
                 "gnome-tour",
-                "yelp",
-                "htop",
-                "nvtop"
+                "yelp"
             ]
         }
     },
