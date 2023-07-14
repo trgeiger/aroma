@@ -8,7 +8,6 @@
                 "distrobox",
                 "intel-media-driver",
                 "just",
-                "kernel-tools",
                 "openssl",
                 "podman-compose",
                 "vim",
