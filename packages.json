@@ -3,8 +3,10 @@
         "include": {
             "all": [
                 "zsh",
+                "fish",
                 "xrandr",
-                "system76-scheduler"
+                "system76-scheduler",
+                "python3-pip"
             ]
         },
         "exclude": {
