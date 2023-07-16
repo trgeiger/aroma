@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Taydora First Boot Setup
+Comment=Help our user install some useful packages on first boot
+Exec=/usr/bin/yafti /etc/yafti.yml
+Icon=org.gnome.Terminal
+Type=Application
+Categories=Utility;System;
+Name[en_US]=startup
