@@ -3,21 +3,8 @@
         "include": {
             "all": [
                 "zsh",
-                "python3-pip",
                 "xrandr",
-                "distrobox",
-                "intel-media-driver",
-                "just",
-                "openssl",
-                "podman-compose",
-                "vim",
-                "zstd",
-                "adw-gtk3-theme",
-                "gnome-tweaks",
-                "raw-thumbnailer",
-                "pipewire-codec-aptx",
-                "libratbag-ratbagd",
-                "ananicy-cpp"
+                "system76-scheduler"
             ]
         },
         "exclude": {
@@ -26,7 +13,9 @@
                 "firefox-langpacks",
                 "gnome-classic-session",
                 "gnome-tour",
-                "yelp"
+                "yelp",
+                "htop",
+                "nvtop"
             ]
         }
     },

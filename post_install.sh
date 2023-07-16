@@ -17,17 +17,10 @@ mv /tmp/cascadiacode-nerdfont/*.ttf /tmp/cascadiacode-nerdfont/LICENSE /usr/shar
 fc-cache -f /usr/share/fonts/inter && \
 fc-cache -f /usr/share/fonts/intelonemono-nerdfont && \
 
-# install ananicy-cpp rules
-wget https://github.com/CachyOS/ananicy-rules/archive/refs/heads/master.zip -O /tmp/ananicy-rules.zip && \
-unzip /tmp/ananicy-rules.zip -d /tmp && \
-mkdir /etc/ananicy.d && \
-cp -r /tmp/ananicy-rules-master/* /etc/ananicy.d && \
-rm -f /etc/yum.repos.d/_copr_*.repo && \
-
 # enable systemd units
 systemctl unmask dconf-update.service && \
 systemctl enable dconf-update.service && \
 systemctl enable rpm-ostreed-automatic.timer && \
 systemctl enable flatpak-system-update.timer && \
 systemctl --global enable flatpak-user-update.timer && \
-systemctl enable ananicy-cpp.service
+systemctl enable com.system76.Scheduler.service
