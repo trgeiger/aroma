@@ -1,11 +1,11 @@
-title: Welcome to Taydora
+title: Welcome to Aroma
 properties:
   mode: "run-on-change"
 screens:
   first-screen:
     source: yafti.screen.title
     values:
-      title: "Welcome to Taydora"
+      title: "Welcome to Aroma"
       icon: "/path/to/icon"
       description: |
         Let's install some apps
@@ -53,7 +53,8 @@ screens:
           packages:
           - Bottles: com.usebottles.bottles
           - Discord: com.discordapp.Discord
-          - MangoHUD: org.freedesktop.Platform.VulkanLayer.MangoHud//22.08
+          - MangoHUD: org.freedesktop.Platform.VulkanLayer.MangoHud
+          - vkBasalt: org.freedesktop.Platform.VulkanLayer.vkBasalt
           - Steam: com.valvesoftware.Steam
           - Gamescope for Steam: com.valvesoftware.Steam.Utility.gamescope
           - Proton Updater for Steam: net.davidotek.pupgui2
@@ -69,6 +70,8 @@ screens:
           - Text Editor: org.gnome.TextEditor
           - Clocks: org.gnome.clocks
           - Mission Center: io.missioncenter.MissionCenter
+          - Blanket: com.rafaelmardojai.Blanket
+          - Shortwave: de.haeckerfelix.Shortwave
           
   final-screen:
     source: yafti.screen.title
