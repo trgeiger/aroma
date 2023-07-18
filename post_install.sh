@@ -17,6 +17,11 @@ mv /tmp/cascadiacode-nerdfont/*.ttf /tmp/cascadiacode-nerdfont/LICENSE /usr/shar
 fc-cache -f /usr/share/fonts/inter && \
 fc-cache -f /usr/share/fonts/intelonemono-nerdfont && \
 
+# remove CLI app .desktop files
+rm -f /usr/share/applications/fish.desktop && \
+rm -f /usr/share/applications/htop.desktop && \
+rm -f /usr/share/applications/nvtop.desktop && \
+
 # enable systemd units
 systemctl unmask dconf-update.service && \
 systemctl enable dconf-update.service && \

@@ -5,7 +5,9 @@
                 "zsh",
                 "xrandr",
                 "system76-scheduler",
-                "python3-pip"
+                "python3-pip",
+                "tldr",
+                "fish"
             ]
         },
         "exclude": {
@@ -14,9 +16,7 @@
                 "firefox-langpacks",
                 "gnome-classic-session",
                 "gnome-tour",
-                "yelp",
-                "htop",
-                "nvtop"
+                "yelp"
             ]
         }
     },
