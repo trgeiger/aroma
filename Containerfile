@@ -43,7 +43,6 @@ RUN curl -SL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv
 
 # Patched gnome for performance
 RUN wget https://copr.fedorainfracloud.org/coprs/calcastor/gnome-patched/repo/fedora-$(rpm -E %fedora)/calcastor-gnome-patched-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_gnome-patched.repo && \
-    rpm-ostree override reset mutter gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland && \
     rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:calcastor:gnome-patched mutter gnome-shell
 
 # VSCode repo
