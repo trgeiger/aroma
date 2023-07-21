@@ -36,6 +36,7 @@ screens:
           packages:
           - Blackbox Terminal: com.raggesilver.BlackBox
           - Calculator: org.gnome.Calculator
+            Calendar: org.gnome.Calendar
           - Characters: org.gnome.Characters
           - Document Viewer: org.gnome.Evince
           - Extensions Manager: com.mattjakeman.ExtensionManager
