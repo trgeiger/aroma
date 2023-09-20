@@ -1,10 +1,10 @@
 ARG BASE_IMAGE="ghcr.io/ublue-os/silverblue-main"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-38}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS aroma
 
 ARG IMAGE_NAME="${IMAGE_NAME}"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-38}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 
 COPY etc /etc
 COPY usr /usr
@@ -13,10 +13,8 @@ ADD packages.json /tmp/packages.json
 ADD install.sh /tmp/install.sh
 ADD post_install.sh /tmp/post_install.sh
 
-RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo
+RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo
 
-RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr mutter mutter-common gnome-control-center gnome-control-center-filesystem xorg-x11-server-Xwayland
 
 RUN /tmp/install.sh
 RUN /tmp/post_install.sh
@@ -29,7 +27,7 @@ RUN mkdir -p /var/tmp && chmod -R 1777 /var/tmp
 FROM aroma as aroma-cloud-dev
 
 ARG IMAGE_NAME="${IMAGE_NAME}"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-38}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 
 # Install Openshift tools -- oc, opm, kubectl, operator-sdk, odo, helm, crc
 RUN curl -SL https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/opm-linux.tar.gz | tar xvzf - -C /usr/bin
@@ -45,7 +43,7 @@ RUN curl -SL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv
 # VSCode repo
 RUN echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo && rpm --import https://packages.microsoft.com/keys/microsoft.asc
 
-RUN rpm-ostree install code qemu libvirt virt-manager java-17-openjdk && rm -f /var/lib/unbound/root.key && \
+RUN rpm-ostree install code qemu libvirt virt-manager && rm -f /var/lib/unbound/root.key && \
     rm -f /etc/yum.repos.d/vscode.repo && \
     rm -f /etc/yum.repos.d/_copr_* && \
     rm -f get_helm.sh && \

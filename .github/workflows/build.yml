@@ -24,11 +24,14 @@ jobs:
       matrix:
         image_flavor: [main]
         base_name: [aroma, aroma-cloud-dev]
-        major_version: [38]
+        major_version: [38, 39]
         include:
           - major_version: 38
-            is_latest_version: true
+            is_latest_version: false
             is_stable_version: true
+          - major_version: 39
+            is_latest_version: true
+            is_stable_version: false
     steps: 
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
