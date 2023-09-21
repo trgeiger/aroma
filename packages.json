@@ -6,9 +6,7 @@
                 "xrandr",
                 "system76-scheduler",
                 "python3-pip",
-                "tldr",
-                "vkBasalt",
-                "mangohud"
+                "tldr"
             ]
         },
         "exclude": {
