@@ -7,7 +7,8 @@
                 "system76-scheduler",
                 "python3-pip",
                 "tldr",
-                "fish"
+                "vkBasalt",
+                "mangohud"
             ]
         },
         "exclude": {
