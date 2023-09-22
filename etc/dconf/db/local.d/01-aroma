@@ -22,7 +22,7 @@ titlebar-font="Inter 11"
 tap-to-click=true
 
 [org/gnome/mutter]
-experimental-features=['scale-monitor-framebuffer','variable-refresh-rate']
+experimental-features=['variable-refresh-rate']
 
 [org/gtk/gtk4/settings/file-chooser]
 sort-directories-first=true
