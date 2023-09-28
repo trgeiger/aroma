@@ -29,9 +29,7 @@
     },
     "39": {
         "include": {
-            "all": [
-                "input-leap"
-            ]
+            "all": []
         },
         "exclude": {
             "all": []
