@@ -1,5 +1,5 @@
 [org/gnome/shell] 
-enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 'io.github.mreditor.gnome-shell-extensions.scroll-panel', 'replace-activities-label@leleat-on-github', 's76-scheduler@mattjakeman.com']
+enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 'io.github.mreditor.gnome-shell-extensions.scroll-panel', 's76-scheduler@mattjakeman.com']
 
 [org/gnome/desktop/background]
 picture-uri='file:///usr/share/backgrounds/aroma/daiga-ellaby-ClWvcrkBhMY-unsplash.jpg'
