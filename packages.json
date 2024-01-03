@@ -6,7 +6,8 @@
                 "xrandr",
                 "system76-scheduler",
                 "python3-pip",
-                "tldr"
+                "tldr",
+                "steam"
             ]
         },
         "exclude": {
