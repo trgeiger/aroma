@@ -18,7 +18,7 @@ document-font-name="Inter 11"
 monospace-font-name="IntoneMono Nerd Font 10"
 clock-show-weekday=true
 font-antialiasing="rgba"
-clock-format="24h"
+clock-format="12h"
 gtk-theme="adw-gtk3-dark"
 
 [org/gnome/desktop/sound]
@@ -72,8 +72,8 @@ switch-to-workspace-left=['<Super>Left']
 switch-to-workspace-right=['<Super>Right']
 move-to-workspace-left=['<Shift><Super>Left']
 move-to-workspace-right=['<Shift><Super>Right']
-move-to-monitor-left=[]
-move-to-monitor-right=[]
+move-to-monitor-left=['']
+move-to-monitor-right=['']
 
 [org/gnome/mutter/keybindings]
 toggle-tiled-left=['<Control><Super>Left']
