@@ -5,6 +5,7 @@
                 "zsh",
                 "xrandr",
                 "system76-scheduler",
+                "gnome-shell-extension-system76-scheduler",
                 "python3-pip",
                 "tldr",
                 "input-leap",
