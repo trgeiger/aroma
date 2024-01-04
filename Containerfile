@@ -13,7 +13,7 @@ COPY just /tmp/just
 COPY packages.json /tmp/packages.json
 COPY build.sh /tmp/build.sh
 COPY image-info.sh /tmp/image-info.sh
-COPY post_install.sh /tmp/post_install.sh
+COPY post-install.sh /tmp/post-install.sh
 
 # GNOME VRR & Prompt
 RUN if [ ${FEDORA_MAJOR_VERSION} -ge "39" ]; then \
@@ -40,8 +40,8 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/bling/repo/fedora-$(rp
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon
 
 RUN /tmp/build.sh
-RUN /tmp/post_install.sh
-RUN /tmp/image_info.sh
+RUN /tmp/post-install.sh
+RUN /tmp/image-info.sh
 RUN rm -rf /tmp/* /var/*
 RUN ostree container commit
 RUN mkdir -p /var/tmp && chmod -R 1777 /var/tmp
