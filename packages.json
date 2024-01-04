@@ -10,7 +10,9 @@
                 "input-leap",
                 "nautilus-open-any-terminal",
                 "ublue-update",
-                "steam"
+                "steam",
+                "solaar",
+				"libratbag-ratbagd"
             ]
         },
         "exclude": {
@@ -19,7 +21,9 @@
                 "firefox-langpacks",
                 "gnome-classic-session",
                 "gnome-tour",
-                "yelp"
+                "yelp",
+                "gnome-terminal-nautilus",
+                "ublue-os-update-services"
             ]
         }
     },
