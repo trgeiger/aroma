@@ -22,6 +22,10 @@ COPY build.sh /tmp/build.sh
 COPY image-info.sh /tmp/image-info.sh
 COPY post-install.sh /tmp/post-install.sh
 
+RUN RUN rpm-ostree cliwrap install-to-root / && \
+    wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachyos-kernel.repo && \
+    rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra --install kernel-cachyos
+
 # GNOME VRR & Prompt
 RUN if [ ${FEDORA_MAJOR_VERSION} -ge "39" ]; then \
         wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-"${FEDORA_MAJOR_VERSION}"/kylegospo-gnome-vrr-fedora-"${FEDORA_MAJOR_VERSION}".repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
