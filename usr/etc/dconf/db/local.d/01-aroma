@@ -1,6 +1,6 @@
 [org/gnome/shell] 
 favorite-apps = ['org.gnome.Prompt.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop']
-enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 's76-scheduler@mattjakeman.com', 'Vitals@CoreCoding.com', 'dash-to-dock@micxgx.gmail.com']
+enabled-extensions = ['gsconnect@andyholmes.github.io', 'AlphabeticalAppGrid@stuarthayhurst', 's76-scheduler@mattjakeman.com', 'Vitals@CoreCoding.com', 'dash-to-dock@micxgx.gmail.com']
 
 [org/gnome/desktop/app-folders]
 folder-children=['Utilities', 'Settings']
