@@ -15,7 +15,7 @@ mkdir -p /tmp/cascadiacode-nerdfont /usr/share/fonts/cascadiacode-nerdfont && \
 unzip /tmp/cascadiacode-nerdfont.zip -d /tmp/cascadiacode-nerdfont/ && \
 mv /tmp/cascadiacode-nerdfont/*.ttf /tmp/cascadiacode-nerdfont/LICENSE /usr/share/fonts/cascadiacode-nerdfont/ && \
 fc-cache -f /usr/share/fonts/inter && \
-fc-cache -f /usr/share/fonts/intelonemono-nerdfont && \
+fc-cache -f /usr/share/fonts/intelonemono-nerdfont
 
 # install Starship shell prompt
 curl -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" && \
@@ -29,10 +29,19 @@ rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
 rm -rf /etc/yum.repos.d/_copr_*
 
+# add Flathub repo
+mkdir -p /usr/etc/flatpak/remotes.d && \
+wget -q https://dl.flathub.org/repo/flathub.flatpakrepo -P /usr/etc/flatpak/remotes.d
+
 # enable systemd units
-systemctl unmask dconf-update.service && \
+systemctl enable com.system76.Scheduler.service && \
 systemctl enable dconf-update.service && \
-systemctl enable rpm-ostreed-automatic.timer && \
-systemctl enable flatpak-system-update.timer && \
-systemctl --global enable flatpak-user-update.timer && \
-systemctl enable com.system76.Scheduler.service
+systemctl enable ublue-update.timer && \
+systemctl enable ublue-system-setup.service && \
+systemctl enable ublue-system-flatpak-manager.service && \
+systemctl --global enable ublue-user-flatpak-manager.service && \
+systemctl --global enable ublue-user-setup.service
+
+# add justfiles
+find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
+

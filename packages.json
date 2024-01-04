@@ -7,6 +7,9 @@
                 "system76-scheduler",
                 "python3-pip",
                 "tldr",
+                "input-leap",
+                "nautilus-open-any-terminal",
+                "ublue-update",
                 "steam"
             ]
         },

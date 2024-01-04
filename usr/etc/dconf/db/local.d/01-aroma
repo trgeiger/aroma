@@ -1,5 +1,5 @@
 [org/gnome/shell] 
-enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 'io.github.mreditor.gnome-shell-extensions.scroll-panel', 's76-scheduler@mattjakeman.com']
+enabled-extensions = ['AlphabeticalAppGrid@stuarthayhurst', 's76-scheduler@mattjakeman.com']
 
 [org/gnome/desktop/background]
 picture-uri='file:///usr/share/backgrounds/aroma/daiga-ellaby-ClWvcrkBhMY-unsplash.jpg'
@@ -15,6 +15,10 @@ monospace-font-name="IntoneMono Nerd Font 10"
 clock-show-weekday=true
 font-antialiasing="rgba"
 
+[org/gnome/desktop/sound]
+allow-volume-above-100-percent=true
+theme-name="freedesktop"
+
 [org/gnome/desktop/wm/preferences]
 titlebar-font="Inter 11"
 
@@ -23,6 +27,10 @@ tap-to-click=true
 
 [org/gnome/mutter]
 experimental-features=['variable-refresh-rate']
+
+
+[org/gtk/settings/file-chooser]
+sort-directories-first=true
 
 [org/gtk/gtk4/settings/file-chooser]
 sort-directories-first=true
@@ -44,3 +52,12 @@ move-to-workspace-left=['<Shift><Super>Left']
 move-to-workspace-right=['<Shift><Super>Right']
 toggle-tiled-left=['<Control><Super>Left']
 toggle-tiled-right=['<Control><Super>Right']
+
+[org/gnome/settings-daemon/plugins/power]
+power-button-action='interactive'
+
+[com/github/stunkymonkey/nautilus-open-any-terminal]
+terminal='prompt'
+keybindings=''
+new-tab=false
+flatpak='off'

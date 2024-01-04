@@ -26,24 +26,8 @@
         <scolor>#ffffff</scolor>
     </wallpaper>
     <wallpaper>
-        <name>Coffee Shop</name>
-        <filename>/usr/share/backgrounds/aroma/karl-fredrickson-TYIzeCiZ_60-unsplash.jpg</filename>
-        <options>zoom</options>
-        <shade_type>solid</shade_type>
-        <pcolor>#000000</pcolor>
-        <scolor>#ffffff</scolor>
-    </wallpaper>
-    <wallpaper>
         <name>Moss</name>
         <filename>/usr/share/backgrounds/aroma/liam-briese-j3qTdwNKarQ-unsplash.jpg</filename>
-        <options>zoom</options>
-        <shade_type>solid</shade_type>
-        <pcolor>#000000</pcolor>
-        <scolor>#ffffff</scolor>
-    </wallpaper>
-    <wallpaper>
-        <name>Autumn Leaves</name>
-        <filename>/usr/share/backgrounds/aroma/mathias-reding-HXZbvYAzAD0-unsplash.jpg</filename>
         <options>zoom</options>
         <shade_type>solid</shade_type>
         <pcolor>#000000</pcolor>
@@ -82,24 +66,8 @@
         <scolor>#ffffff</scolor>
     </wallpaper>
     <wallpaper>
-        <name>Coffee Beans</name>
-        <filename>/usr/share/backgrounds/aroma/tina-guina-obV_LM0KjxY-unsplash.jpg</filename>
-        <options>zoom</options>
-        <shade_type>solid</shade_type>
-        <pcolor>#000000</pcolor>
-        <scolor>#ffffff</scolor>
-    </wallpaper>
-    <wallpaper>
         <name>Branches</name>
         <filename>/usr/share/backgrounds/aroma/vitolda-klein-gFRXVl9_osc-unsplash.jpg</filename>
-        <options>zoom</options>
-        <shade_type>solid</shade_type>
-        <pcolor>#000000</pcolor>
-        <scolor>#ffffff</scolor>
-    </wallpaper>
-    <wallpaper>
-        <name>Purple Forest</name>
-        <filename>/usr/share/backgrounds/aroma/wolfgang-hasselmann-v_hHKRU6cw0-unsplash.jpg</filename>
         <options>zoom</options>
         <shade_type>solid</shade_type>
         <pcolor>#000000</pcolor>
