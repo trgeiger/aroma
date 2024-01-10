@@ -13,10 +13,10 @@
                 "input-leap",
                 "nautilus-open-any-terminal",
                 "ublue-update",
-                "steam",
-                "gamescope",
                 "libratbag-ratbagd",
                 "edid-decode",
+                "gamescope-session-steam",
+                "vkBasalt",
                 "mangohud"
             ]
         },
@@ -29,6 +29,13 @@
                 "yelp",
                 "gnome-terminal-nautilus",
                 "ublue-os-update-services"
+            ],
+            "aroma-cloud-dev": [
+                "steam",
+                "gamescope",
+                "gamescope-session-steam",
+                "vkBasalt",
+                "mangohud"
             ]
         }
     },
