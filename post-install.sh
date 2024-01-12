@@ -2,9 +2,6 @@
 
 set -ouex pipefail
 
-# install yafti
-pip install --prefix=/usr yafti && \
-
 # install fonts
 curl -sL $(curl -s https://api.github.com/repos/rsms/inter/releases | jq -r '.[0].assets[0].browser_download_url') -o /tmp/inter.zip && \
 mkdir -p /tmp/inter /usr/share/fonts/inter && \
@@ -33,15 +30,12 @@ rm -rf /etc/yum.repos.d/_copr_*
 mkdir -p /usr/etc/flatpak/remotes.d && \
 wget -q https://dl.flathub.org/repo/flathub.flatpakrepo -P /usr/etc/flatpak/remotes.d
 
+# steams duperemove dedupe service
+wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.service -O /usr/lib/systemd/system/btrfs-dedup@.service && \
+wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.timer -O /usr/lib/systemd/system/btrfs-dedup@.timer
+
 # enable systemd units
 systemctl enable com.system76.Scheduler.service && \
 systemctl enable dconf-update.service && \
-systemctl enable ublue-update.timer && \
-systemctl enable ublue-system-setup.service && \
 systemctl enable ublue-system-flatpak-manager.service && \
-systemctl --global enable ublue-user-flatpak-manager.service && \
-systemctl --global enable ublue-user-setup.service
-
-# add justfiles
-find /tmp/just -iname '*.just' -exec printf "\n\n" \; -exec cat {} \; >> /usr/share/ublue-os/just/60-custom.just
-
+systemctl --global enable ublue-user-flatpak-manager.service

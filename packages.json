@@ -8,14 +8,11 @@
                 "gnome-shell-extension-system76-scheduler",
                 "gnome-shell-extension-dash-to-dock",
                 "gnome-shell-extension-gsconnect",
-                "python3-pip",
                 "tldr",
                 "input-leap",
                 "nautilus-open-any-terminal",
-                "ublue-update",
+                "steam",
                 "libratbag-ratbagd",
-                "edid-decode",
-                "gamescope-session-steam",
                 "vkBasalt",
                 "mangohud"
             ]
