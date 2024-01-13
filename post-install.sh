@@ -25,7 +25,7 @@ rm -f /usr/share/applications/fish.desktop && \
 rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
 rm -f /usr/share/applications/shredder.desktop && \
-rm -rf /etc/yum.repos.d/_copr_*
+rm -rf /etc/yum.repos.d/_copr*
 
 # add Flathub repo
 mkdir -p /usr/etc/flatpak/remotes.d && \
