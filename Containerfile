@@ -28,9 +28,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/LatencyFleX/repo/fedora-$(rpm -E %fedora)/kylegospo-LatencyFleX-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-latencyflex.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/obs-vkcapture/repo/fedora-$(rpm -E %fedora)/kylegospo-obs-vkcapture-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-obs-vkcapture.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/vk_hdr_layer/repo/fedora-$(rpm -E %fedora)/kylegospo-vk_hdr_layer-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-vk_hdr_layer.repo && \
     wget https://copr.fedorainfracloud.org/coprs/ycollet/audinux/repo/fedora-$(rpm -E %fedora)/ycollet-audinux-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ycollet-audinux.repo
 
 RUN rpm-ostree override replace \
@@ -120,7 +118,6 @@ RUN rpm-ostree override remove \
 # Install new packages
 RUN rpm-ostree install \
         ublue-update \
-        discover-overlay \
         python3-pip \
         libadwaita \
         duperemove \
@@ -133,12 +130,10 @@ RUN rpm-ostree install \
         ladspa-caps-plugins \
         ladspa-noise-suppression-for-voice \
         python3-icoextract \
-        btop \
         fish \
         xdotool \
         wmctrl \
         libcec \
-        yad \
         f3 \
         pulseaudio-utils \
         unrar \
@@ -224,17 +219,12 @@ RUN rpm-ostree override replace \
         wine-core.i686 \
         wine-pulseaudio.x86_64 \
         wine-pulseaudio.i686 \
-        winetricks \
-        protontricks \
         latencyflex-vulkan-layer \
         vkBasalt.x86_64 \
         vkBasalt.i686 \
         mangohud.x86_64 \
         mangohud.i686 \
-        vk_hdr_layer.x86_64 \
-        vk_hdr_layer.i686 \
-        gperftools-libs.i686 \
-        goverlay && \
+        gperftools-libs.i686 && \
     sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/*bazzite*.repo && \
     wget https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-39/repo/fedora-$(rpm -E %fedora)/gloriouseggroll-nobara-39-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_nobara-39.repo && \
     rpm-ostree install gamescope-session-steam && \

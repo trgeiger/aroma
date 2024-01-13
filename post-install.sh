@@ -25,7 +25,6 @@ rm -f /usr/share/applications/fish.desktop && \
 rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
 rm -f /usr/share/applications/shredder.desktop && \
-rm -f /usr/share/vulkan/icd.d/lvp_icd.*.json && \
 rm -rf /etc/yum.repos.d/_copr_*
 
 # add Flathub repo
