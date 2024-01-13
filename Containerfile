@@ -99,12 +99,7 @@ RUN rpm-ostree override replace \
         bluez \
         bluez-cups \
         bluez-libs \
-        bluez-obexd \
-        vkBasalt.x86_64 \
-        vkBasalt.i686 \
-        mangohud.x86_64 \
-        mangohud.i686 \
-        gamescope
+        bluez-obexd
 
 # power-profiles-daemon temporary fix and Gnome VRR
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
@@ -133,6 +128,9 @@ RUN rpm-ostree install \
     duperemove \
     xrandr \
     steam \
+    mangohud \
+    gamescope \
+    vkBasalt \
     gnome-shell-extension-system76-scheduler \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
