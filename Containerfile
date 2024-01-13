@@ -30,7 +30,7 @@ RUN rpm-ostree cliwrap install-to-root / && \
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/bling/repo/fedora-$(rpm -E %fedora)/ublue-os-bling-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-bling.repo && \
     wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-"${FEDORA_MAJOR_VERSION}"/ublue-os-staging-fedora-"${FEDORA_MAJOR_VERSION}".repo -O /etc/yum.repos.d/_copr_ublue-os-staging-fedora-"${FEDORA_MAJOR_VERSION}".repo && \
-    wget https://copr.fedorainfracloud.org/Coors/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-"${FEDORA_MAJOR_VERSION}"/kylegospo-gnome-vrr-fedora-"${FEDORA_MAJOR_VERSION}".repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
@@ -128,13 +128,82 @@ RUN rpm-ostree install \
     zsh \
     duperemove \
     xrandr \
-    steam \
-    mangohud \
-    gamescope \
-    vkBasalt \
+    glibc.i686 \
+    vulkan-tools \
+    glibc.i686 \
+    unrar \
+    setools \
     gnome-shell-extension-system76-scheduler \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
+
+RUN rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        pipewire \
+        pipewire-alsa \
+        pipewire-gstreamer \
+        pipewire-jack-audio-connection-kit \
+        pipewire-jack-audio-connection-kit-libs \
+        pipewire-libs \
+        pipewire-pulseaudio \
+        pipewire-utils \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        gnutls \
+        || true && \
+    rpm-ostree install \
+        vulkan-loader.i686 \
+        alsa-lib.i686 \
+        fontconfig.i686 \
+        gtk2.i686 \
+        libICE.i686 \
+        libnsl.i686 \
+        libxcrypt-compat.i686 \
+        libpng12.i686 \
+        libXext.i686 \
+        libXinerama.i686 \
+        libXtst.i686 \
+        libXScrnSaver.i686 \
+        NetworkManager-libnm.i686 \
+        nss.i686 \
+        pulseaudio-libs.i686 \
+        libcurl.i686 \
+        systemd-libs.i686 \
+        libva.i686 \
+        libvdpau.i686 \
+        libdbusmenu-gtk3.i686 \
+        libatomic.i686 \
+        pipewire-alsa.i686 \
+        clinfo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
+    rpm-ostree install \
+        steam && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/fedora-updates.repo && \
+    rpm-ostree install \
+        wxGTK \
+        libFAudio \
+        wine-core.x86_64 \
+        wine-core.i686 \
+        wine-pulseaudio.x86_64 \
+        wine-pulseaudio.i686 \
+        winetricks \
+        protontricks \
+        vkBasalt.x86_64 \
+        vkBasalt.i686 \
+        mangohud.x86_64 \
+        mangohud.i686 \
+        gamescope.x86_64 \
+        gamescope-libs.i686 \
+        gperftools-libs.i686 && \
 
 RUN /tmp/post-install.sh
 RUN rm -rf /tmp/* /var/*
