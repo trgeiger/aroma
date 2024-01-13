@@ -104,8 +104,7 @@ RUN rpm-ostree override replace \
         vkBasalt.i686 \
         mangohud.x86_64 \
         mangohud.i686 \
-        gamescope.x86_64 \
-        gamescope-libs.i686
+        gamescope
 
 # power-profiles-daemon temporary fix and Gnome VRR
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
