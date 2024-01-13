@@ -51,7 +51,6 @@ RUN rpm-ostree override remove \
     gnome-classic-session \
     gnome-tour \
     gnome-software-rpm-ostree \
-    gnome-extensions-app \
     yelp \
     ublue-os-update-services
 
@@ -67,7 +66,6 @@ RUN rpm-ostree install \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
 
-RUN /tmp/build.sh
 RUN /tmp/post-install.sh
 RUN rm -rf /tmp/* /var/*
 RUN ostree container commit
