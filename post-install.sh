@@ -24,18 +24,22 @@ curl -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/lat
 rm -f /usr/share/applications/fish.desktop && \
 rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
+rm -f /usr/share/applications/shredder.desktop && \
+rm -f /usr/share/vulkan/icd.d/lvp_icd.*.json && \
 rm -rf /etc/yum.repos.d/_copr_*
 
 # add Flathub repo
 mkdir -p /usr/etc/flatpak/remotes.d && \
 wget -q https://dl.flathub.org/repo/flathub.flatpakrepo -P /usr/etc/flatpak/remotes.d
 
-# steams duperemove dedupe service
-wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.service -O /usr/lib/systemd/system/btrfs-dedup@.service && \
-wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.timer -O /usr/lib/systemd/system/btrfs-dedup@.timer
-
 # enable systemd units
 systemctl enable com.system76.Scheduler.service && \
 systemctl enable dconf-update.service && \
 systemctl enable ublue-system-flatpak-manager.service && \
 systemctl --global enable ublue-user-flatpak-manager.service
+systemctl enable btrfs-dedup@var-home.timer && \
+systemctl enable input-remapper.service && \
+systemctl disable rpm-ostreed-automatic.timer && \
+systemctl enable ublue-update.timer && \
+systemctl enable dev-hugepages1G.mount && \
+systemctl --global enable podman.socket
