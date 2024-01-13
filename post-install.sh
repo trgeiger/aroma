@@ -41,5 +41,4 @@ systemctl enable btrfs-dedup@var-home.timer && \
 systemctl enable input-remapper.service && \
 systemctl disable rpm-ostreed-automatic.timer && \
 systemctl enable ublue-update.timer && \
-systemctl enable dev-hugepages1G.mount && \
 systemctl --global enable podman.socket
