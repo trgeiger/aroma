@@ -126,6 +126,7 @@ RUN rpm-ostree override remove \
 
 # additions
 RUN rpm-ostree install \
+    edid-decode \
     zsh \
     ublue-update \
     python3-pip \
