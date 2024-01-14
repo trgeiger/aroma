@@ -1,7 +1,7 @@
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-silverblue}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR:-main}"
-ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME-$IMAGE_FLAVOR}"
-ARG BASE_IMAGE="ghcr.io/ublue-os/${SOURCE_IMAGE}"
+ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME}"
+ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/${SOURCE_IMAGE}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 ARG TARGET_BASE="${TARGET_BASE:-aroma}"
 
@@ -32,6 +32,10 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo
 
+RUN rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
+    fedora-repos-archive
+
 # power-profiles-daemon temporary fix and Gnome VRR overrides
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
     rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
@@ -52,22 +56,32 @@ RUN rpm-ostree override remove \
     gnome-classic-session \
     gnome-tour \
     gnome-software-rpm-ostree \
-    yelp \
-    ublue-os-update-services
+    yelp
 
 # additions
 RUN rpm-ostree install \
+    bootc \
+    distrobox \
+    libratbag-ratbagd \
+    vim \
     edid-decode \
     zsh \
     ublue-update \
     python3-pip \
     libadwaita \
+    kernel-tools \
     duperemove \
+    pipewire-codec-aptx \
+    nvtop \
+    htop \
+    nvme-cli \
+    openssl \
     xrandr \
     rmlint \
     system76-scheduler \
     unrar \
-    setools
+    setools \
+    zstd
 
 # game stuff
 RUN rpm-ostree install \
@@ -78,6 +92,9 @@ RUN rpm-ostree install \
 
 # install gnome stuff
 RUN rpm-ostree install \
+    adw-gtk3-theme \
+    gnome-epub-thumbnailer \
+    gnome-tweaks \
     gnome-shell-extension-system76-scheduler \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
