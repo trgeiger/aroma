@@ -203,7 +203,7 @@ RUN rpm-ostree override replace \
         mangohud.i686 \
         gamescope.x86_64 \
         gamescope-libs.i686 \
-        gperftools-libs.i686 && \
+        gperftools-libs.i686
 
 RUN /tmp/post-install.sh
 RUN rm -rf /tmp/* /var/*
