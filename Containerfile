@@ -21,21 +21,20 @@ COPY packages.json /tmp/packages.json
 COPY build.sh /tmp/build.sh
 COPY post-install.sh /tmp/post-install.sh
 
-
-
 RUN rpm-ostree cliwrap install-to-root / && \
     wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachyos-kernel.repo && \
     rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra --install kernel-cachyos
 
 # Add custom repos
-RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/bling/repo/fedora-$(rpm -E %fedora)/ublue-os-bling-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-bling.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-"${FEDORA_MAJOR_VERSION}"/ublue-os-staging-fedora-"${FEDORA_MAJOR_VERSION}".repo -O /etc/yum.repos.d/_copr_ublue-os-staging-fedora-"${FEDORA_MAJOR_VERSION}".repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
+RUN wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/ublue-os/bling/repo/fedora-$(rpm -E %fedora)/ublue-os-bling-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-bling.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-"${FEDORA_MAJOR_VERSION}"/kylegospo-gnome-vrr-fedora-"${FEDORA_MAJOR_VERSION}".repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo
 
+# Common build errors
 RUN rpm-ostree override replace \
     --experimental \
     --from repo=updates \
@@ -102,7 +101,7 @@ RUN rpm-ostree override replace \
         bluez-libs \
         bluez-obexd
 
-# power-profiles-daemon temporary fix and Gnome VRR
+# power-profiles-daemon temporary fix and Gnome VRR overrides
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
     rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
         mutter \
@@ -115,6 +114,7 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
     rpm-ostree install \
         prompt
 
+# removals
 RUN rpm-ostree override remove \
     firefox \
     firefox-langpacks \
@@ -124,19 +124,31 @@ RUN rpm-ostree override remove \
     yelp \
     ublue-os-update-services
 
+# additions
 RUN rpm-ostree install \
     zsh \
+    ublue-update \
+    python3-pip \
+    libadwaita \
     duperemove \
     xrandr \
-    glibc.i686 \
+    rmlint \
+    compsize \
+    system76-scheduler \
+    fish \
+    f3 \
+    unrar \
+    mesa-libGLU \
     vulkan-tools \
     glibc.i686 \
-    unrar \
+    twitter-twemoji-fonts \
+    google-noto-sans-cjk-fonts \
+    lato-fonts \
+    fira-code-fonts \
     setools \
-    gnome-shell-extension-system76-scheduler \
-    gnome-shell-extension-dash-to-dock \
-    gnome-shell-extension-just-perfection
+    redhat-lsb-core
 
+# Install steam
 RUN rpm-ostree override replace \
     --experimental \
     --from repo=updates \
@@ -203,8 +215,17 @@ RUN rpm-ostree override replace \
         mangohud.i686 \
         gamescope.x86_64 \
         gamescope-libs.i686 \
-        gperftools-libs.i686
+        gperftools-libs.i686 && \
+    ln -s /usr/bin/wine64 /usr/bin/wine
 
+# install gnome stuff
+RUN rpm-ostree install \
+        gnome-randr-rust \
+        gnome-shell-extension-system76-scheduler \
+        gnome-shell-extension-dash-to-dock \
+        gnome-shell-extension-just-perfection
+
+# run post-install tasks and clean up
 RUN /tmp/post-install.sh
 RUN rm -rf /tmp/* /var/*
 RUN ostree container commit
