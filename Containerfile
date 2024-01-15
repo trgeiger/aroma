@@ -21,10 +21,6 @@ COPY packages.json /tmp/packages.json
 COPY build.sh /tmp/build.sh
 COPY post-install.sh /tmp/post-install.sh
 
-RUN rpm-ostree cliwrap install-to-root / && \
-    wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachyos-kernel.repo && \
-    rpm-ostree override remove kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra --install kernel-cachyos
-
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
     wget https://copr.fedorainfracloud.org/coprs/ublue-os/bling/repo/fedora-$(rpm -E %fedora)/ublue-os-bling-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-bling.repo && \
@@ -35,6 +31,18 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(
 RUN rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
     https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
     fedora-repos-archive
+
+# Install kernel-fsync
+RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora-$(rpm -E %fedora)/sentry-kernel-fsync-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_sentry-kernel-fsync.repo && \
+    rpm-ostree cliwrap install-to-root / && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:sentry:kernel-fsync \
+        kernel \
+        kernel-core \
+        kernel-modules \
+        kernel-modules-core \
+        kernel-modules-extra
 
 # power-profiles-daemon temporary fix and Gnome VRR overrides
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
@@ -55,6 +63,7 @@ RUN rpm-ostree override remove \
     firefox-langpacks \
     gnome-classic-session \
     gnome-tour \
+    gnome-terminal-nautilus \
     gnome-software-rpm-ostree \
     yelp
 
@@ -83,21 +92,25 @@ RUN rpm-ostree install \
     setools \
     zstd
 
-# game stuff
-RUN rpm-ostree install \
-    steam \
-    gamescope \
-    mangohud \
-    vkBasalt
-
-# install gnome stuff
+# gnome stuff
 RUN rpm-ostree install \
     adw-gtk3-theme \
+    nautilus-open-any-terminal \
     gnome-epub-thumbnailer \
     gnome-tweaks \
     gnome-shell-extension-system76-scheduler \
     gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
+
+# game stuff
+RUN rpm-ostree install \
+    steam \
+    gamescope \
+    mangohud \
+    vkBasalt && \
+    rpm-ostree override remove \
+    gamemode \
+    gnome-shell-extension-gamemode
 
 # run post-install tasks and clean up
 RUN /tmp/post-install.sh
