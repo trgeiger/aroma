@@ -12,7 +12,6 @@ ARG IMAGE_VENDOR="${IMAGE_VENDOR}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
-ARG PACKAGE_LIST="aroma"
 
 COPY etc /etc
 COPY usr /usr
@@ -67,6 +66,7 @@ RUN rpm-ostree override remove \
 # additions
 RUN rpm-ostree install \
     just \
+    jq \
     bootc \
     distrobox \
     libratbag-ratbagd \
@@ -110,18 +110,23 @@ RUN rpm-ostree install \
     gnome-shell-extension-gamemode
 
 # run post-install tasks and clean up
-RUN /tmp/post-install.sh && \
+RUN mkdir -p /usr/share/ublue-os && \
+    /tmp/post-install.sh && \
     /tmp/image-info.sh && \
     rm -rf /tmp/* /var/* && \
     mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \
     ostree container commit
 
+
 # cloud development build
 FROM aroma as aroma-cloud-dev
 
 ARG IMAGE_NAME="${IMAGE_NAME}"
-ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
+ARG IMAGE_VENDOR="${IMAGE_VENDOR}"
+ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}"
+ARG IMAGE_FLAVOR="${IMAGE_FLAVOR}"
+ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION}"
 
 # Install Openshift tools -- oc, opm, kubectl, operator-sdk, odo, helm, crc
 RUN export VER=$(curl --silent -qI https://github.com/operator-framework/operator-sdk/releases/latest | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}') && \
