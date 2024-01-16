@@ -1,9 +1,9 @@
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-silverblue}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR:-main}"
+ARG IMAGE_BRANCH="${IMAGE_BRANCH:-main}"
 ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME}"
 ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/${SOURCE_IMAGE}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
-ARG TARGET_BASE="${TARGET_BASE:-aroma}"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS aroma
 
@@ -16,10 +16,7 @@ ARG PACKAGE_LIST="aroma"
 
 COPY etc /etc
 COPY usr /usr
-COPY just /tmp/just
-COPY packages.json /tmp/packages.json
-COPY build.sh /tmp/build.sh
-COPY post-install.sh /tmp/post-install.sh
+COPY tmp /tmp
 
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
@@ -69,6 +66,7 @@ RUN rpm-ostree override remove \
 
 # additions
 RUN rpm-ostree install \
+    just \
     bootc \
     distrobox \
     libratbag-ratbagd \
@@ -99,7 +97,6 @@ RUN rpm-ostree install \
     gnome-epub-thumbnailer \
     gnome-tweaks \
     gnome-shell-extension-system76-scheduler \
-    gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-just-perfection
 
 # game stuff
@@ -113,10 +110,12 @@ RUN rpm-ostree install \
     gnome-shell-extension-gamemode
 
 # run post-install tasks and clean up
-RUN /tmp/post-install.sh
-RUN rm -rf /tmp/* /var/*
-RUN ostree container commit
-RUN mkdir -p /var/tmp && chmod -R 1777 /var/tmp
+RUN /tmp/post-install.sh && \
+    /tmp/image-info.sh && \
+    rm -rf /tmp/* /var/* && \
+    mkdir -p /var/tmp && \
+    chmod -R 1777 /var/tmp && \
+    ostree container commit
 
 # cloud development build
 FROM aroma as aroma-cloud-dev
