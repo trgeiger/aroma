@@ -41,8 +41,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora
         kernel-modules-extra
 
 # power-profiles-daemon temporary fix and Gnome VRR overrides
-RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:ublue-os:staging power-profiles-daemon && \
-    rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
+RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
         mutter \
         mutter-common \
         gnome-control-center \
@@ -96,6 +95,7 @@ RUN rpm-ostree install \
     nautilus-open-any-terminal \
     gnome-epub-thumbnailer \
     gnome-tweaks \
+    gnome-shell-extension-dash-to-dock \
     gnome-shell-extension-system76-scheduler \
     gnome-shell-extension-just-perfection
 
