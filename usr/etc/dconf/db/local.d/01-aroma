@@ -33,7 +33,7 @@ secondary-color='FFFFFF'
 [org/gnome/desktop/interface]
 font-name="Inter 11"
 document-font-name="Inter 11"
-monospace-font-name="IntoneMono Nerd Font 10"
+monospace-font-name="Commit Mono Nerd Font 10"
 clock-show-weekday=true
 font-antialiasing="rgba"
 clock-format="12h"
