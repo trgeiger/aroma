@@ -1,13 +1,13 @@
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME:-silverblue}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR:-main}"
 ARG IMAGE_BRANCH="${IMAGE_BRANCH:-main}"
-ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME}"
-ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/${SOURCE_IMAGE}"
+ARG SOURCE_IMAGE="${SOURCE_IMAGE:-$BASE_IMAGE_NAME-$IMAGE_FLAVOR}"
+ARG BASE_IMAGE="ghcr.io/ublue-os/${SOURCE_IMAGE}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 
 FROM ${BASE_IMAGE}:${FEDORA_MAJOR_VERSION} AS aroma
 
-ARG IMAGE_NAME="${IMAGE_NAME}"
+ARG IMAGE_NAME="${IMAGE_NAME:-aroma}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}"
@@ -24,10 +24,6 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo
 
-RUN rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-    https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
-    fedora-repos-archive
-
 # Install kernel-fsync
 RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora-$(rpm -E %fedora)/sentry-kernel-fsync-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_sentry-kernel-fsync.repo && \
     rpm-ostree cliwrap install-to-root / && \
@@ -40,74 +36,81 @@ RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora
         kernel-modules-core \
         kernel-modules-extra
 
-# power-profiles-daemon temporary fix and Gnome VRR overrides
-RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
-        mutter \
-        mutter-common \
-        gnome-control-center \
-        gnome-control-center-filesystem && \
-    rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
-        vte291 \
-        vte-profile && \
+# Add ublue packages, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
+COPY --from=ghcr.io/ublue-os/akmods:fsync-${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
+RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo && \
+    wget https://negativo17.org/repos/fedora-multimedia.repo -O /etc/yum.repos.d/negativo17-fedora-multimedia.repo && \
     rpm-ostree install \
-        prompt
+        /tmp/akmods-rpms/kmods/*xpadneo*.rpm \
+        /tmp/akmods-rpms/kmods/*xpad-noone*.rpm \
+        /tmp/akmods-rpms/kmods/*xone*.rpm \
+        /tmp/akmods-rpms/kmods/*openrazer*.rpm \
+        /tmp/akmods-rpms/kmods/*v4l2loopback*.rpm \
+        /tmp/akmods-rpms/kmods/*wl*.rpm \
+        /tmp/akmods-rpms/kmods/*gcadapter_oc*.rpm \
+        /tmp/akmods-rpms/kmods/*nct6687*.rpm \
+        /tmp/akmods-rpms/kmods/*evdi*.rpm \
+        /tmp/akmods-rpms/kmods/*zenpower3*.rpm \
+        /tmp/akmods-rpms/kmods/*ryzen-smu*.rpm && \
+    rm -rf /etc/yum.repos.d/negativo*
 
 # removals
 RUN rpm-ostree override remove \
-    firefox \
-    firefox-langpacks \
-    gnome-classic-session \
-    gnome-tour \
-    gnome-terminal-nautilus \
-    gnome-software-rpm-ostree \
-    yelp
+        firefox \
+        firefox-langpacks \
+        gnome-tour \
+        gnome-classic-session \
+        gnome-terminal-nautilus \
+        ublue-os-update-services \
+        yelp
 
 # additions
 RUN rpm-ostree install \
-    just \
-    jq \
-    bootc \
-    distrobox \
-    libratbag-ratbagd \
-    vim \
-    edid-decode \
-    zsh \
-    ublue-update \
-    python3-pip \
-    libadwaita \
-    kernel-tools \
-    duperemove \
-    pipewire-codec-aptx \
-    nvtop \
-    htop \
-    nvme-cli \
-    openssl \
-    xrandr \
-    rmlint \
-    system76-scheduler \
-    unrar \
-    setools \
-    zstd
+        jq \
+        edid-decode \
+        zsh \
+        ublue-update \
+        python3-pip \
+        libadwaita \
+        duperemove \
+        xrandr \
+        rmlint \
+        system76-scheduler \
+        unrar \
+        vulkan-tools \
+        setools
 
 # gnome stuff
-RUN rpm-ostree install \
-    adw-gtk3-theme \
-    nautilus-open-any-terminal \
-    gnome-epub-thumbnailer \
-    gnome-tweaks \
-    gnome-shell-extension-dash-to-dock \
-    gnome-shell-extension-system76-scheduler \
-    gnome-shell-extension-just-perfection
+RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
+        vte291 \
+        vte-profile && \
+    rpm-ostree install \
+        prompt && \
+    rpm-ostree install \
+        nautilus-open-any-terminal \
+        gnome-epub-thumbnailer \
+        gnome-shell-extension-dash-to-dock \
+        gnome-shell-extension-system76-scheduler \
+        gnome-shell-extension-just-perfection
 
-# game stuff
-RUN rpm-ostree install \
-    steam \
-    gamescope \
-    mangohud \
-    vkBasalt && \
-    rpm-ostree override remove \
-    gamemode \
-    gnome-shell-extension-gamemode
+# Gaming-specific changes
+RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
+        # Gnome VRR
+        rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
+            mutter \
+            mutter-common \
+            gnome-control-center \
+            gnome-control-center-filesystem && \
+
+        rpm-ostree install \
+            steam \
+            gamescope \
+            mangohud \
+            vkBasalt && \
+        rpm-ostree override remove \
+            gamemode \
+            gnome-shell-extension-gamemode \
+    ; fi
 
 # run post-install tasks and clean up
 RUN mkdir -p /usr/share/ublue-os && \
@@ -122,11 +125,21 @@ RUN mkdir -p /usr/share/ublue-os && \
 # cloud development build
 FROM aroma as aroma-cloud-dev
 
-ARG IMAGE_NAME="${IMAGE_NAME}"
+ARG IMAGE_NAME="${IMAGE_NAME:-aroma-cloud-dev}"
 ARG IMAGE_VENDOR="${IMAGE_VENDOR}"
 ARG BASE_IMAGE_NAME="${BASE_IMAGE_NAME}"
 ARG IMAGE_FLAVOR="${IMAGE_FLAVOR}"
 ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION}"
+
+# Gnome patched with triple buffering
+RUN if [[ "${IMAGE_NAME}" == "aroma-cloud-dev" ]]; then \
+        wget https://copr.fedorainfracloud.org/coprs/trixieua/mutter-patched/repo/fedora-$(rpm -E %fedora)/trixieua-mutter-patched-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_gnome-triplebuffering.repo && \
+        rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:trixieua:mutter-patched \
+        gnome-shell \
+        mutter \
+        mutter-common \
+        xorg-x11-server-Xwayland \
+    ; fi
 
 # Install Openshift tools -- oc, opm, kubectl, operator-sdk, odo, helm, crc
 RUN export VER=$(curl --silent -qI https://github.com/operator-framework/operator-sdk/releases/latest | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}') && \
@@ -139,18 +152,21 @@ RUN curl -SL https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/odo/la
 RUN curl -SL https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/crc/latest/crc-linux-amd64.tar.xz | tar xfJ - --strip-components 1 -C /usr/bin
 
 # Install awscli
-RUN curl -SL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && ./aws/install --bin-dir /usr/bin --install-dir /usr/bin
+RUN curl -SL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && \
+    unzip awscliv2.zip && \
+    ./aws/install --bin-dir /usr/bin --install-dir /usr/bin
 
 # VSCode repo
 RUN echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo && rpm --import https://packages.microsoft.com/keys/microsoft.asc
 
-RUN rpm-ostree install code qemu libvirt virt-manager && rm -f /var/lib/unbound/root.key && \
-    rpm-ostree override remove \
-        steam \
-        gamescope \
-        mangohud \
-        vkBasalt && \
-    rm -f /etc/yum.repos.d/vscode.repo && \
+RUN rpm-ostree install \
+        code \
+        qemu \
+        libvirt \
+        virt-manager && \
+        rm -f /var/lib/unbound/root.key
+
+RUN rm -f /etc/yum.repos.d/vscode.repo && \
     rm -f /etc/yum.repos.d/_copr_* && \
     rm -f get_helm.sh && \
     rm -rf aws && \
@@ -158,4 +174,5 @@ RUN rpm-ostree install code qemu libvirt virt-manager && rm -f /var/lib/unbound/
     rm -f /usr/bin/README.md && \
     rm -f /usr/bin/LICENSE && \
     rm -rf /tmp/* /var/* && \
+    sed -i '/^PRETTY_NAME/s/Aroma/Aroma Cloud Dev/' /usr/lib/os-release && \
     ostree container commit
