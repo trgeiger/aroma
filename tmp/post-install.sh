@@ -46,4 +46,6 @@ systemctl enable btrfs-dedup@var-home.timer && \
 systemctl disable rpm-ostreed-automatic.timer && \
 systemctl enable ublue-update.timer && \
 systemctl --global enable podman.socket && \
+cp /tmp/80-aroma.just /usr/share/ublue-os/just/80-aroma.just && \
+echo "import \"/usr/share/ublue-os/just/80-aroma.just\"" >> /usr/share/ublue-os/justfile && \
 sed -i '/^PRETTY_NAME/s/Silverblue/Aroma/' /usr/lib/os-release
