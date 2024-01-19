@@ -58,12 +58,7 @@ RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
 RUN rpm-ostree override remove \
         firefox \
         firefox-langpacks \
-        gnome-tour \
-        gnome-extensions-app \
-        gnome-classic-session \
-        gnome-terminal-nautilus \
-        ublue-os-update-services \
-        yelp
+        ublue-os-update-services
 
 # additions
 RUN rpm-ostree install \
@@ -92,7 +87,14 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
         gnome-epub-thumbnailer \
         gnome-shell-extension-dash-to-dock \
         gnome-shell-extension-system76-scheduler \
-        gnome-shell-extension-just-perfection
+        gnome-shell-extension-just-perfection && \
+    rpm-ostree override remove \
+        gnome-software-rpm-ostree \
+        gnome-extensions-app \
+        gnome-tour \
+        gnome-classic-session \
+        gnome-terminal-nautilus \
+        yelp
 
 # Gaming-specific changes
 RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
