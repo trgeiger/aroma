@@ -121,6 +121,14 @@ jobs:
           extra-args: |
             --target=${{ matrix.base_name }}
 
+      - name: Sign kernel
+        uses: EyeCantCU/kernel-signer@v0.1.2
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          privkey: ${{ secrets.AROMA_PRIVKEY_18012024 }}
+          pubkey: /etc/pki/akmods/certs/aroma-secure-boot.der
+          tags: ${{ steps.build_image.outputs.tags }}
+
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
       - name: Lowercase Registry
