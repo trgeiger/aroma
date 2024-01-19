@@ -77,7 +77,7 @@ sort-directories-first=true
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
 binding='<Super>t'
-command='/usr/bin/prompt --new-window'
+command='xdg-terminal-exec'
 name='Launch Terminal'
 
 [org/gnome/settings-daemon/plugins/media-keys]
