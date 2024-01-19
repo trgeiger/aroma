@@ -59,6 +59,7 @@ RUN rpm-ostree override remove \
         firefox \
         firefox-langpacks \
         gnome-tour \
+        gnome-extensions-app \
         gnome-classic-session \
         gnome-terminal-nautilus \
         ublue-os-update-services \

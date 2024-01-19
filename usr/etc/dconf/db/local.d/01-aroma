@@ -6,15 +6,15 @@ enabled-extensions = ['just-perfection-desktop@just-perfection', 'dash-to-dock@m
 folder-children=['Containers', 'Utilities', 'Settings']
 
 [org/gnome/desktop/app-folders/folders/Utilities]
-apps=['org.gnome.DiskUtility.desktop', 'gnome-system-monitor.desktop', 'io.github.flattool.Warehouse']
+apps=['org.gnome.DiskUtility.desktop', 'gnome-system-monitor.desktop', 'io.github.flattool.Warehouse''org.gnome.Connections.desktop', 'org.gnome.Loupe.desktop']
 categories=['X-GNOME-Utilities']
 name='X-GNOME-Utilities.directory'
 translate=true
 
 [org/gnome/desktop/app-folders/folders/Settings]
-apps=['com.github.tchx84.Flatseal.desktop', 'org.gnome.Shell.Extensions.desktop', 'org.gnome.tweaks.desktop', 'org.gnome.Settings.desktop']
-categories=['X-GNOME-Utilities']
-name='X-GNOME-Utilities.directory'
+apps=['ca.desrt.dconf-editor.desktop', 'com.mattjakeman.ExtensionManager.desktop', 'com.github.tchx84.Flatseal.desktop', 'org.gnome.Settings.desktop', 'org.gnome.tweaks.desktop']
+categories=['Settings']
+name='Settings'
 translate=true
 
 [org/gnome/desktop/app-folders/folders/Containers]

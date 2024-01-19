@@ -2,5 +2,6 @@ org.mozilla.firefox
 com.github.marhkb.Pods
 com.github.tchx84.Flatseal
 io.github.flattool.Warehouse
+com.mattjakeman.ExtensionManager
 org.gtk.Gtk3theme.adw-gtk3
 org.gtk.Gtk3theme.adw-gtk3-dark
