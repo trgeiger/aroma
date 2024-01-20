@@ -74,7 +74,11 @@ RUN rpm-ostree install \
         system76-scheduler \
         unrar \
         vulkan-tools \
-        setools
+        setools \
+        rsms-inter-fonts \
+        firacode-nerd-fonts \
+        jetbrainsmono-nerd-fonts \
+        cascadiacode-nerd-fonts
 
 # gnome stuff
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \

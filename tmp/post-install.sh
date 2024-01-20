@@ -2,17 +2,6 @@
 
 set -ouex pipefail
 
-# install fonts
-curl -sL $(curl -s https://api.github.com/repos/rsms/inter/releases | jq -r '.[0].assets[0].browser_download_url') -o /tmp/inter.zip && \
-mkdir -p /tmp/inter /usr/share/fonts/inter && \
-unzip /tmp/inter.zip -d /tmp/inter/ && \
-mv /tmp/inter/*.ttf /tmp/inter/*.ttc /tmp/inter/LICENSE.txt /usr/share/fonts/inter/ && \
-curl -sL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CommitMono.zip -o /tmp/commitmono-nerdfont.zip && \
-mkdir -p /usr/share/fonts/commitmono-nerdfont && \
-unzip /tmp/commitmono-nerdfont.zip -d /usr/share/fonts/commitmono-nerdfont && \
-fc-cache -f /usr/share/fonts/inter && \
-fc-cache -f /usr/share/fonts/commitmono-nerdfont
-
 # install Starship shell prompt
 curl -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" && \
 tar -xzf /tmp/starship.tar.gz -C /tmp && \
