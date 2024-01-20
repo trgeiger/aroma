@@ -2,6 +2,16 @@
 
 set -ouex pipefail
 
+# Install non-packaged fonts
+curl -sL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CommitMono.zip -o /tmp/commitmono-nerdfont.zip && \
+mkdir -p /usr/share/fonts/commitmono-nerdfont && \
+unzip /tmp/commitmono-nerdfont.zip -d /usr/share/fonts/commitmono-nerdfont && \
+curl -sL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monaspace.zip -o /tmp/monaspace-nerdfont.zip && \
+mkdir -p /usr/share/fonts/monaspace-nerdfont && \
+unzip /tmp/monaspace-nerdfont.zip -d /usr/share/fonts/monaspace-nerdfont && \
+fc-cache -f /usr/share/fonts/commitmono-nerdfont && \
+fc-cache -f /usr/share/fonts/monaspace-nerdfont
+
 # install Starship shell prompt
 curl -Lo /tmp/starship.tar.gz "https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz" && \
 tar -xzf /tmp/starship.tar.gz -C /tmp && \
