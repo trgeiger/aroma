@@ -18,6 +18,5 @@ org.gnome.NautilusPreviewer
 org.gnome.TextEditor
 org.gnome.Weather
 org.gnome.baobab
-org.gnome.clocks
 org.gnome.font-viewer
 io.github.celluloid_player.Celluloid
