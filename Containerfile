@@ -119,10 +119,10 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
 
 # run post-install tasks and clean up
 RUN mkdir -p /usr/share/ublue-os && \
+    pip install --prefix=/usr topgrade && \
     rpm-ostree install ublue-update && \
     /tmp/post-install.sh && \
     /tmp/image-info.sh && \
-    pip install --prefix=/usr topgrade && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
     cp /tmp/ublue-update.toml /usr/etc/ublue-update/ublue-update.toml && \
