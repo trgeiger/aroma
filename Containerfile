@@ -36,7 +36,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora
         kernel-modules-core \
         kernel-modules-extra
 
-# Add ublue packages, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
+# Add ublue akmods, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
 COPY --from=ghcr.io/ublue-os/akmods:fsync-${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
 RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo && \
     wget https://negativo17.org/repos/fedora-multimedia.repo -O /etc/yum.repos.d/negativo17-fedora-multimedia.repo && \
@@ -65,7 +65,6 @@ RUN rpm-ostree install \
         jq \
         edid-decode \
         zsh \
-        ublue-update \
         python3-pip \
         libadwaita \
         duperemove \
@@ -121,6 +120,8 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
 RUN mkdir -p /usr/share/ublue-os && \
     /tmp/post-install.sh && \
     /tmp/image-info.sh && \
+    pip install --prefix=/usr topgrade && \
+    rpm-ostree install ublue-update && \
     rm -rf /tmp/* /var/* && \
     mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \
