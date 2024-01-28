@@ -16,6 +16,7 @@ ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 COPY etc /etc
 COPY usr /usr
 COPY tmp /tmp
+COPY usr/etc/ublue-update/ublue-update.toml /tmp/ublue-update.toml
 
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
@@ -122,6 +123,20 @@ RUN mkdir -p /usr/share/ublue-os && \
     /tmp/image-info.sh && \
     pip install --prefix=/usr topgrade && \
     rpm-ostree install ublue-update && \
+    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
+    sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
+    cp /tmp/ublue-update.toml /usr/etc/ublue-update/ublue-update.toml && \
+    cp /tmp/80-aroma.just /usr/share/ublue-os/just/80-aroma.just && \
+    systemctl enable com.system76.Scheduler.service && \
+    systemctl enable dconf-update.service && \
+    systemctl enable ublue-system-flatpak-manager.service && \
+    systemctl --global enable ublue-user-flatpak-manager.service
+    systemctl enable btrfs-dedup@var-home.timer && \
+    systemctl disable rpm-ostreed-automatic.timer && \
+    systemctl enable ublue-update.timer && \
+    systemctl --global enable podman.socket && \
+    echo "import \"/usr/share/ublue-os/just/80-aroma.just\"" >> /usr/share/ublue-os/justfile && \
+    sed -i '/^PRETTY_NAME/s/Silverblue/Aroma/' /usr/lib/os-release && \
     rm -rf /tmp/* /var/* && \
     mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \

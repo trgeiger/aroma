@@ -33,18 +33,3 @@ wget -q https://dl.flathub.org/repo/flathub.flatpakrepo -P /usr/etc/flatpak/remo
 # duperemove
 wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.service -O /usr/lib/systemd/system/btrfs-dedup@.service && \
 wget https://gitlab.com/popsulfr/steamos-btrfs/-/raw/11114e4ff791eb2c385814c2fcbac6a83f144f35/files/usr/lib/systemd/system/btrfs-dedup@.timer -O /usr/lib/systemd/system/btrfs-dedup@.timer
-
-# systemd
-sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
-sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
-systemctl enable com.system76.Scheduler.service && \
-systemctl enable dconf-update.service && \
-systemctl enable ublue-system-flatpak-manager.service && \
-systemctl --global enable ublue-user-flatpak-manager.service
-systemctl enable btrfs-dedup@var-home.timer && \
-systemctl disable rpm-ostreed-automatic.timer && \
-systemctl enable ublue-update.timer && \
-systemctl --global enable podman.socket && \
-cp /tmp/80-aroma.just /usr/share/ublue-os/just/80-aroma.just && \
-echo "import \"/usr/share/ublue-os/just/80-aroma.just\"" >> /usr/share/ublue-os/justfile && \
-sed -i '/^PRETTY_NAME/s/Silverblue/Aroma/' /usr/lib/os-release
