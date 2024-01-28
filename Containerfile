@@ -130,7 +130,7 @@ RUN mkdir -p /usr/share/ublue-os && \
     systemctl enable com.system76.Scheduler.service && \
     systemctl enable dconf-update.service && \
     systemctl enable ublue-system-flatpak-manager.service && \
-    systemctl --global enable ublue-user-flatpak-manager.service
+    systemctl --global enable ublue-user-flatpak-manager.service && \
     systemctl enable btrfs-dedup@var-home.timer && \
     systemctl disable rpm-ostreed-automatic.timer && \
     systemctl enable ublue-update.timer && \
