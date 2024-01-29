@@ -76,6 +76,9 @@ RUN rpm-ostree install \
         vulkan-tools \
         setools \
         rsms-inter-fonts \
+        jetbrains-mono-fonts \
+        fira-code-fonts \
+        cascadia-code-fonts \
         nerd-fonts
 
 # gnome stuff
