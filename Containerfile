@@ -20,6 +20,8 @@ COPY usr/etc/ublue-update/ublue-update.toml /tmp/ublue-update.toml
 
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo && \
@@ -35,7 +37,9 @@ RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora
         kernel-core \
         kernel-modules \
         kernel-modules-core \
-        kernel-modules-extra
+        kernel-modules-extra \
+        kernel-uki-virt
+
 
 # Add ublue akmods, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
 COPY --from=ghcr.io/ublue-os/akmods:fsync-${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
@@ -54,6 +58,111 @@ RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo
         /tmp/akmods-rpms/kmods/*zenergy*.rpm \
         /tmp/akmods-rpms/kmods/*ryzen-smu*.rpm && \
     rm -rf /etc/yum.repos.d/negativo*
+
+# Update packages that commonly cause build issues
+RUN rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        vulkan-loader \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        gnutls \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        glib2 \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        gtk3 \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        atk \
+        at-spi2-atk \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libaom \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        gstreamer1 \
+        gstreamer1-plugins-base \
+        gstreamer1-plugins-bad-free-libs \
+        gstreamer1-plugins-good-qt \
+        gstreamer1-plugins-good \
+        gstreamer1-plugins-bad-free \
+        gstreamer1-plugin-libav \
+        gstreamer1-plugins-ugly-free \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        python3 \
+        python3-libs \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libdecor \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libtirpc \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libuuid \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libblkid \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libmount \
+        || true && \
+    rpm-ostree override remove \
+        glibc32 \
+        || true
+
+# Install Valve's patched Mesa, Pipewire and Bluez
+RUN rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
+        mesa-filesystem \
+        mesa-dri-drivers \
+        mesa-libEGL \
+        mesa-libgbm \
+        mesa-libGL \
+        mesa-libglapi \
+        mesa-vulkan-drivers \
+        mesa-libOSMesa \
+        pipewire \
+        pipewire-alsa \
+        pipewire-gstreamer \
+        pipewire-jack-audio-connection-kit \
+        pipewire-jack-audio-connection-kit-libs \
+        pipewire-libs \
+        pipewire-pulseaudio \
+        pipewire-utils \
+        bluez \
+        bluez-cups \
+        bluez-libs \
+        bluez-obexd \
+        xorg-x11-server-Xwayland
 
 # removals
 RUN rpm-ostree override remove \
@@ -79,7 +188,10 @@ RUN rpm-ostree install \
         jetbrains-mono-fonts \
         fira-code-fonts \
         cascadia-code-fonts \
-        nerd-fonts
+        nerd-fonts \
+        mesa-libGLU \
+        vulkan-tools \
+        glibc.i686
 
 # gnome stuff
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
@@ -103,21 +215,62 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
 
 # Gaming-specific changes
 RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
-        # Gnome VRR
-        rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
-            mutter \
-            mutter-common \
-            gnome-control-center \
-            gnome-control-center-filesystem && \
+     rpm-ostree install \
+        at-spi2-core.i686 \
+        atk.i686 \
+        vulkan-loader.i686 \
+        mesa-vulkan-drivers.i686 \
+        alsa-lib.i686 \
+        fontconfig.i686 \
+        gtk2.i686 \
+        libICE.i686 \
+        libnsl.i686 \
+        libxcrypt-compat.i686 \
+        libpng12.i686 \
+        libXext.i686 \
+        libXinerama.i686 \
+        libXtst.i686 \
+        libXScrnSaver.i686 \
+        NetworkManager-libnm.i686 \
+        nss.i686 \
+        pulseaudio-libs.i686 \
+        libcurl.i686 \
+        systemd-libs.i686 \
+        libva.i686 \
+        libvdpau.i686 \
+        libdbusmenu-gtk3.i686 \
+        libatomic.i686 \
+        pipewire-alsa.i686 \
+        clinfo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
+    rpm-ostree install \
+        steam && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/fedora-updates.repo && \
+    rpm-ostree install \
+        vkBasalt.x86_64 \
+        vkBasalt.i686 \
+        mangohud.x86_64 \
+        mangohud.i686 && \
 
-        rpm-ostree install \
-            steam \
-            gamescope \
-            mangohud \
-            vkBasalt && \
-        rpm-ostree override remove \
-            gamemode \
-            gnome-shell-extension-gamemode \
+        # Gnome VRR
+    rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
+        mutter \
+        mutter-common \
+        gnome-control-center \
+        gnome-control-center-filesystem && \
+    rpm-ostree override remove \
+        gamemode \
+        gnome-shell-extension-gamemode && \
+
+    # Bazzite gamescope breaks HDR, use vanilla Fedora
+    rm -rf /etc/yum.repos.d/*bazzite* && \
+    rpm-ostree install gamescope \
     ; fi
 
 # run post-install tasks and clean up
