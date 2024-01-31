@@ -288,9 +288,11 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         gamemode \
         gnome-shell-extension-gamemode && \
 
-    # Bazzite gamescope breaks HDR, use vanilla Fedora
-    rm -rf /etc/yum.repos.d/*bazzite* && \
-    rpm-ostree install gamescope \
+    rpm-ostree install \
+        gamescope.x86_64 \
+        gamescope-libs.x86_64 \
+        gamescope-libs.i686 \
+        gamescope-shaders \
     ; fi
 
 # run post-install tasks and clean up
