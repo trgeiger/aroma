@@ -293,6 +293,10 @@ RUN mkdir -p /usr/share/ublue-os && \
     systemctl --global enable podman.socket && \
     echo "import \"/usr/share/ublue-os/just/80-aroma.just\"" >> /usr/share/ublue-os/justfile && \
     sed -i '/^PRETTY_NAME/s/Silverblue/Aroma/' /usr/lib/os-release && \
+    curl -sL https://rubjo.github.io/victor-mono/VictorMonoAll.zip -o /tmp/victormono.zip && \
+    mkdir -p /usr/share/fonts/victor-mono && \
+    unzip /tmp/victormono.zip -d /usr/share/fonts/victor-mono && \
+    fc-cache -f /usr/share/fonts/victor-mono && \
     rm -rf /tmp/* /var/* && \
     mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \

@@ -10,7 +10,6 @@ echo 'eval "$(starship init bash)"' >> /etc/bashrc && \
 echo 'eval "$(starship init zsh)"' >> /etc/zshrc
 
 # remove CLI app .desktop files and copr repos
-rm -f /usr/share/applications/fish.desktop && \
 rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
 rm -f /usr/share/applications/shredder.desktop && \
