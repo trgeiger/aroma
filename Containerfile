@@ -40,7 +40,6 @@ RUN wget https://copr.fedorainfracloud.org/coprs/sentry/kernel-fsync/repo/fedora
         kernel-modules-extra \
         kernel-uki-virt
 
-
 # Add ublue akmods, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
 COPY --from=ghcr.io/ublue-os/akmods:fsync-${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
 RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo && \
@@ -134,6 +133,20 @@ RUN rpm-ostree override replace \
     --from repo=updates \
         libmount \
         || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates-archive \
+        glibc-headers \
+        glibc-devel \
+        || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        glibc \
+        glibc-common \
+        glibc-all-langpacks \
+        glibc-gconv-extra \
+        || true && \
     rpm-ostree override remove \
         glibc32 \
         || true
@@ -186,12 +199,16 @@ RUN rpm-ostree install \
         setools \
         rsms-inter-fonts \
         jetbrains-mono-fonts \
-        fira-code-fonts \
-        cascadia-code-fonts \
         nerd-fonts \
         mesa-libGLU \
         vulkan-tools \
-        glibc.i686
+        glibc.i686 && \
+    # Install patched fonts from Terra then remove repo
+    wget https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo -O /etc/yum.repos.d/terra.repo && \
+    rpm-ostree install \
+        cascadiacode-nerd-fonts \
+        maple-fonts && \
+    rm -rf /etc/yum.repos.d/terra.repo
 
 # gnome stuff
 RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
@@ -219,7 +236,6 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         at-spi2-core.i686 \
         atk.i686 \
         vulkan-loader.i686 \
-        mesa-vulkan-drivers.i686 \
         alsa-lib.i686 \
         fontconfig.i686 \
         gtk2.i686 \
@@ -242,6 +258,10 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         libatomic.i686 \
         pipewire-alsa.i686 \
         clinfo && \
+    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
+    rpm-ostree install \
+        mesa-vulkan-drivers.i686 \
+        mesa-va-drivers-freeworld.i686 && \
     sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
     sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
     sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
@@ -293,10 +313,6 @@ RUN mkdir -p /usr/share/ublue-os && \
     systemctl --global enable podman.socket && \
     echo "import \"/usr/share/ublue-os/just/80-aroma.just\"" >> /usr/share/ublue-os/justfile && \
     sed -i '/^PRETTY_NAME/s/Silverblue/Aroma/' /usr/lib/os-release && \
-    curl -sL https://rubjo.github.io/victor-mono/VictorMonoAll.zip -o /tmp/victormono.zip && \
-    mkdir -p /usr/share/fonts/victor-mono && \
-    unzip /tmp/victormono.zip -d /usr/share/fonts/victor-mono && \
-    fc-cache -f /usr/share/fonts/victor-mono && \
     rm -rf /tmp/* /var/* && \
     mkdir -p /var/tmp && \
     chmod -R 1777 /var/tmp && \
