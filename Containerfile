@@ -188,6 +188,7 @@ RUN rpm-ostree install \
         jq \
         edid-decode \
         zsh \
+        patch \
         python3-pip \
         libadwaita \
         duperemove \
