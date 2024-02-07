@@ -20,8 +20,8 @@ COPY usr/etc/ublue-update/ublue-update.toml /tmp/ublue-update.toml
 
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
-    wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
+    # wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-bazzite.repo && \
+    # wget https://copr.fedorainfracloud.org/coprs/kylegospo/bazzite-multilib/repo/fedora-$(rpm -E %fedora)/kylegospo-bazzite-multilib-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-bazzite-multilib.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo && \
@@ -157,30 +157,30 @@ RUN rpm-ostree override replace \
         || true
 
 # Install Valve's patched Mesa, Pipewire and Bluez
-RUN rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
-        mesa-filesystem \
-        mesa-dri-drivers \
-        mesa-libEGL \
-        mesa-libgbm \
-        mesa-libGL \
-        mesa-libglapi \
-        mesa-vulkan-drivers \
-        mesa-libOSMesa \
-        pipewire \
-        pipewire-alsa \
-        pipewire-gstreamer \
-        pipewire-jack-audio-connection-kit \
-        pipewire-jack-audio-connection-kit-libs \
-        pipewire-libs \
-        pipewire-pulseaudio \
-        pipewire-utils \
-        bluez \
-        bluez-cups \
-        bluez-libs \
-        bluez-obexd \
-        xorg-x11-server-Xwayland
+# RUN rpm-ostree override replace \
+#     --experimental \
+#     --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
+#         mesa-filesystem \
+#         mesa-dri-drivers \
+#         mesa-libEGL \
+#         mesa-libgbm \
+#         mesa-libGL \
+#         mesa-libglapi \
+#         mesa-vulkan-drivers \
+#         mesa-libOSMesa \
+#         pipewire \
+#         pipewire-alsa \
+#         pipewire-gstreamer \
+#         pipewire-jack-audio-connection-kit \
+#         pipewire-jack-audio-connection-kit-libs \
+#         pipewire-libs \
+#         pipewire-pulseaudio \
+#         pipewire-utils \
+#         bluez \
+#         bluez-cups \
+#         bluez-libs \
+#         bluez-obexd \
+#         xorg-x11-server-Xwayland
 
 # removals
 RUN rpm-ostree override remove \
@@ -207,8 +207,8 @@ RUN rpm-ostree install \
         jetbrains-mono-fonts \
         nerd-fonts \
         mesa-libGLU \
-        vulkan-tools \
-        glibc.i686 && \
+        vulkan-tools && \
+        # glibc.i686 && \
     # Install patched fonts from Terra then remove repo
     wget https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo -O /etc/yum.repos.d/terra.repo && \
     rpm-ostree install \
@@ -238,51 +238,56 @@ RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfra
 
 # Gaming-specific changes
 RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
-     rpm-ostree install \
-        at-spi2-core.i686 \
-        atk.i686 \
-        vulkan-loader.i686 \
-        alsa-lib.i686 \
-        fontconfig.i686 \
-        gtk2.i686 \
-        libICE.i686 \
-        libnsl.i686 \
-        libxcrypt-compat.i686 \
-        libpng12.i686 \
-        libXext.i686 \
-        libXinerama.i686 \
-        libXtst.i686 \
-        libXScrnSaver.i686 \
-        NetworkManager-libnm.i686 \
-        nss.i686 \
-        pulseaudio-libs.i686 \
-        libcurl.i686 \
-        systemd-libs.i686 \
-        libva.i686 \
-        libvdpau.i686 \
-        libdbusmenu-gtk3.i686 \
-        libatomic.i686 \
-        pipewire-alsa.i686 \
-        clinfo && \
-    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
     rpm-ostree install \
-        mesa-vulkan-drivers.i686 \
-        mesa-va-drivers-freeworld.i686 && \
-    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
-    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
-    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
-    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
-    rpm-ostree install \
-        steam && \
-    sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
-    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
-    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
-    sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/fedora-updates.repo && \
-    rpm-ostree install \
-        vkBasalt.x86_64 \
-        vkBasalt.i686 \
-        mangohud.x86_64 \
-        mangohud.i686 && \
+        steam \
+        mangohud \
+        gamescope \
+        vkBasalt && \
+    #  rpm-ostree install \
+        # at-spi2-core.i686 \
+        # atk.i686 \
+        # vulkan-loader.i686 \
+        # alsa-lib.i686 \
+        # fontconfig.i686 \
+        # gtk2.i686 \
+        # libICE.i686 \
+        # libnsl.i686 \
+        # libxcrypt-compat.i686 \
+        # libpng12.i686 \
+        # libXext.i686 \
+        # libXinerama.i686 \
+        # libXtst.i686 \
+        # libXScrnSaver.i686 \
+        # NetworkManager-libnm.i686 \
+        # nss.i686 \
+        # pulseaudio-libs.i686 \
+        # libcurl.i686 \
+        # systemd-libs.i686 \
+        # libva.i686 \
+        # libvdpau.i686 \
+        # libdbusmenu-gtk3.i686 \
+        # libatomic.i686 \
+        # pipewire-alsa.i686 \
+        # clinfo && \
+    # sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
+    # rpm-ostree install \
+    #     mesa-vulkan-drivers.i686 \
+    #     mesa-va-drivers-freeworld.i686 && \
+    # sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    # sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    # sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    # sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/fedora-updates.repo && \
+    # rpm-ostree install \
+        # steam && \
+    # sed -i '0,/enabled=1/s//enabled=0/' /etc/yum.repos.d/rpmfusion-nonfree-steam.repo && \
+    # sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree.repo && \
+    # sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/rpmfusion-nonfree-updates.repo && \
+    # sed -i '0,/enabled=0/s//enabled=1/' /etc/yum.repos.d/fedora-updates.repo && \
+    # rpm-ostree install \
+    #     vkBasalt.x86_64 \
+    #     vkBasalt.i686 \
+    #     mangohud.x86_64 \
+    #     mangohud.i686 && \
 
         # Gnome VRR
     rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:gnome-vrr \
@@ -292,13 +297,14 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         gnome-control-center-filesystem && \
     rpm-ostree override remove \
         gamemode \
-        gnome-shell-extension-gamemode && \
+        gnome-shell-extension-gamemode \
+        # gnome-shell-extension-gamemode && \
 
-    rpm-ostree install \
-        gamescope.x86_64 \
-        gamescope-libs.x86_64 \
-        gamescope-libs.i686 \
-        gamescope-shaders \
+    # rpm-ostree install \
+    #     gamescope.x86_64 \
+    #     gamescope-libs.x86_64 \
+    #     gamescope-libs.i686 \
+    #     gamescope-shaders \
     ; fi
 
 # run post-install tasks and clean up
