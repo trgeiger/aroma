@@ -25,6 +25,7 @@ RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/system76-scheduler/repo/fedora-$(rpm -E %fedora)/kylegospo-system76-scheduler-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-system76-scheduler.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/gnome-vrr/repo/fedora-$(rpm -E %fedora)/kylegospo-gnome-vrr-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_kylegospo-gnome-vrr.repo && \
     wget https://copr.fedorainfracloud.org/coprs/kylegospo/prompt/repo/fedora-$(rpm -E %fedora)/kylegospo-prompt-fedora-$(rpm -E %fedora).repo?arch=x86_64 -O /etc/yum.repos.d/_copr_kylegospo-prompt.repo && \
+    wget https://copr.fedorainfracloud.org/coprs/sentry/switcheroo-control_discrete/repo/fedora-$(rpm -E %fedora)/sentry-switcheroo-control_discrete-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_sentry-switcheroo-control_discrete.repo && \
     wget https://copr.fedorainfracloud.org/coprs/che/nerd-fonts/repo/fedora-$(rpm -E %fedora)/che-nerd-fonts-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_che-nerd-fonts-$(rpm -E %fedora).repo
 
 # Install kernel-fsync
@@ -157,6 +158,7 @@ RUN rpm-ostree override replace \
         || true
 
 # Install Valve's patched Mesa, Pipewire and Bluez
+# Install patched switcheroo control with proper discrete GPU support
 RUN rpm-ostree override replace \
     --experimental \
     --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
@@ -180,7 +182,13 @@ RUN rpm-ostree override replace \
         bluez-cups \
         bluez-libs \
         bluez-obexd \
-        xorg-x11-server-Xwayland
+        xorg-x11-server-Xwayland && \
+    rpm-ostree install \
+        mesa-vdpau-drivers-freeworld.x86_64 && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
+        switcheroo-control
 
 # removals
 RUN rpm-ostree override remove \
@@ -217,12 +225,18 @@ RUN rpm-ostree install \
     rm -rf /etc/yum.repos.d/terra.repo
 
 # gnome stuff
-RUN rpm-ostree override replace --experimental --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
+RUN rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite \
+        gnome-shell && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:kylegospo:prompt \
         vte291 \
         vte-profile \
         libadwaita && \
     rpm-ostree install \
-        prompt && \
+        ptyxis && \
     rpm-ostree install \
         nautilus-open-any-terminal \
         gnome-epub-thumbnailer \

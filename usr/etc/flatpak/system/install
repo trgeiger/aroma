@@ -12,6 +12,7 @@ org.gnome.Characters
 org.gnome.Contacts
 org.gnome.Connections
 org.gnome.Evince
+org.gnome.FileRoller
 org.gnome.Loupe
 org.gnome.Logs
 org.gnome.NautilusPreviewer
