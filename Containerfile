@@ -194,10 +194,24 @@ RUN rpm-ostree override replace \
 RUN rpm-ostree override remove \
         firefox \
         firefox-langpacks \
-        ublue-os-update-services
+        ublue-os-update-services && \
+    rpm-ostree override remove \
+        power-profiles-daemon \
+        || true && \
+    rpm-ostree override remove \
+        tlp \
+        tlp-rdw \
+        || true
 
 # additions
 RUN rpm-ostree install \
+        tuned \
+        tuned-ppd \
+        tuned-utils \
+        tuned-gtk \
+        tuned-profiles-atomic \
+        tuned-profiles-cpu-partitioning \
+        powertop \
         jq \
         edid-decode \
         zsh \
@@ -326,9 +340,11 @@ RUN mkdir -p /usr/share/ublue-os && \
     /tmp/image-info.sh && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
+    sed -i 's@Name=tuned-gui@Name=TuneD Manager@g' /usr/share/applications/tuned-gui.desktop && \
     cp /tmp/ublue-update.toml /usr/etc/ublue-update/ublue-update.toml && \
     cp /tmp/80-aroma.just /usr/share/ublue-os/just/80-aroma.just && \
     systemctl enable com.system76.Scheduler.service && \
+    systemctl enable tuned.service && \
     systemctl enable dconf-update.service && \
     systemctl enable ublue-system-flatpak-manager.service && \
     systemctl --global enable ublue-user-flatpak-manager.service && \
