@@ -16,7 +16,6 @@ ARG FEDORA_MAJOR_VERSION="${FEDORA_MAJOR_VERSION:-39}"
 COPY etc /etc
 COPY usr /usr
 COPY tmp /tmp
-COPY usr/etc/ublue-update/ublue-update.toml /tmp/ublue-update.toml
 
 # Add custom repos
 RUN wget https://copr.fedorainfracloud.org/coprs/ublue-os/staging/repo/fedora-$(rpm -E %fedora)/ublue-os-staging-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_ublue-os-staging.repo && \
@@ -46,7 +45,6 @@ COPY --from=ghcr.io/ublue-os/akmods:fsync-${FEDORA_MAJOR_VERSION} /rpms /tmp/akm
 RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo && \
     wget https://negativo17.org/repos/fedora-multimedia.repo -O /etc/yum.repos.d/negativo17-fedora-multimedia.repo && \
     rpm-ostree install \
-        /tmp/akmods-rpms/kmods/*xpadneo*.rpm \
         /tmp/akmods-rpms/kmods/*xone*.rpm \
         /tmp/akmods-rpms/kmods/*openrazer*.rpm \
         /tmp/akmods-rpms/kmods/*v4l2loopback*.rpm \
@@ -141,49 +139,31 @@ RUN rpm-ostree override replace \
         || true && \
     rpm-ostree override replace \
     --experimental \
-    --from repo=updates-archive \
-        glibc-headers \
-        glibc-devel \
-        || true && \
-    rpm-ostree override replace \
-    --experimental \
     --from repo=updates \
-        glibc \
-        glibc-common \
-        glibc-all-langpacks \
-        glibc-gconv-extra \
+        cups-libs \
         || true && \
     rpm-ostree override remove \
         glibc32 \
         || true
 
-# Install Valve's patched Mesa, Pipewire and Bluez
+# Install Valve's patched Mesa
 # Install patched switcheroo control with proper discrete GPU support
-RUN rpm-ostree override replace \
+RUN rpm-ostree override remove \
+        mesa-va-drivers-freeworld && \
+    rpm-ostree override replace \
     --experimental \
     --from repo=copr:copr.fedorainfracloud.org:kylegospo:bazzite-multilib \
         mesa-filesystem \
-        mesa-dri-drivers \
-        mesa-libEGL \
-        mesa-libgbm \
-        mesa-libGL \
+        mesa-libxatracker \
         mesa-libglapi \
+        mesa-dri-drivers \
+        mesa-libgbm \
+        mesa-libEGL \
         mesa-vulkan-drivers \
-        mesa-libOSMesa \
-        pipewire \
-        pipewire-alsa \
-        pipewire-gstreamer \
-        pipewire-jack-audio-connection-kit \
-        pipewire-jack-audio-connection-kit-libs \
-        pipewire-libs \
-        pipewire-pulseaudio \
-        pipewire-utils \
-        bluez \
-        bluez-cups \
-        bluez-libs \
-        bluez-obexd \
+        mesa-libGL \
         xorg-x11-server-Xwayland && \
     rpm-ostree install \
+        mesa-va-drivers-freeworld \
         mesa-vdpau-drivers-freeworld.x86_64 && \
     rpm-ostree override replace \
     --experimental \
@@ -231,6 +211,15 @@ RUN rpm-ostree install \
         mesa-libGLU \
         vulkan-tools \
         glibc.i686 && \
+    mkdir -p /usr/share/ublue-os && \
+    pip install --prefix=/usr topgrade && \
+    rpm-ostree install \
+        ublue-update && \
+    sed -i '1s/^/[include]\npaths = ["\/etc\/ublue-os\/topgrade.toml"]\n\n/' /usr/share/ublue-update/topgrade-user.toml && \
+    sed -i 's/min_battery_percent.*/min_battery_percent = 20.0/' /usr/etc/ublue-update/ublue-update.toml && \
+    sed -i 's/max_cpu_load_percent.*/max_cpu_load_percent = 100.0/' /usr/etc/ublue-update/ublue-update.toml && \
+    sed -i 's/max_mem_percent.*/max_mem_percent = 90.0/' /usr/etc/ublue-update/ublue-update.toml && \
+    sed -i 's/dbus_notify.*/dbus_notify = false/' /usr/etc/ublue-update/ublue-update.toml && \
     # Install patched fonts from Terra then remove repo
     wget https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo -O /etc/yum.repos.d/terra.repo && \
     rpm-ostree install \
@@ -250,8 +239,8 @@ RUN rpm-ostree override replace \
         vte-profile \
         libadwaita && \
     rpm-ostree install \
-        ptyxis && \
-    rpm-ostree install \
+        ptyxis \
+        gnome-randr-rust \
         nautilus-open-any-terminal \
         gnome-epub-thumbnailer \
         gnome-shell-extension-dash-to-dock \
@@ -322,8 +311,10 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         gnome-control-center-filesystem && \
     # remove Feral gamemode
     rpm-ostree override remove \
-        gamemode \
-        gnome-shell-extension-gamemode && \
+            gamemode && \
+    rpm-ostree override remove \
+            gnome-shell-extension-gamemode \
+            || true && \
     # install gamescope
     rpm-ostree install \
         gamescope.x86_64 \
@@ -333,16 +324,11 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
     ; fi
 
 # run post-install tasks and clean up
-RUN mkdir -p /usr/share/ublue-os && \
-    pip install --prefix=/usr topgrade && \
-    rpm-ostree install ublue-update && \
-    /tmp/post-install.sh && \
+RUN /tmp/post-install.sh && \
     /tmp/image-info.sh && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/user.conf && \
     sed -i 's/#DefaultTimeoutStopSec.*/DefaultTimeoutStopSec=15s/' /etc/systemd/system.conf && \
     sed -i 's@Name=tuned-gui@Name=TuneD Manager@g' /usr/share/applications/tuned-gui.desktop && \
-    cp /tmp/ublue-update.toml /usr/etc/ublue-update/ublue-update.toml && \
-    cp /tmp/80-aroma.just /usr/share/ublue-os/just/80-aroma.just && \
     systemctl enable com.system76.Scheduler.service && \
     systemctl enable tuned.service && \
     systemctl enable dconf-update.service && \
