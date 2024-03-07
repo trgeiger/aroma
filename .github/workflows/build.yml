@@ -1,10 +1,10 @@
 name: build-aroma
 on:
+  schedule:
+    - cron: '20 20 * * *'  # 8:20pm everyday
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '20 20 * * *'  # 8:20pm everyday
   push:
     branches:
       - main
@@ -13,7 +13,7 @@ env:
 
 jobs:
   push-ghcr:
-    name: Build and push image
+    name: Create image
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -30,17 +30,12 @@ jobs:
             is_latest_version: true
             is_stable_version: true
     steps: 
-      # Checkout push-to-registry action GitHub repository
-      - name: Checkout Push to Registry action
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Matrix Variables
         run: |
-          if [[ "${{ matrix.image_flavor }}" == "main" ]]; then
-              echo "IMAGE_NAME=${{ matrix.base_name }}" >> $GITHUB_ENV
-          else
-              echo "IMAGE_NAME=${{ format('{0}-{1}', matrix.base_name, matrix.image_flavor) }}" >> $GITHUB_ENV
-          fi
+          echo "IMAGE_NAME=${{ matrix.base_name }}" >> $GITHUB_ENV
 
       - name: Generate tags
         id: generate-tags
@@ -86,7 +81,7 @@ jobs:
       - name: Get Current Fedora Version
         id: labels
         run: |  
-          ver=$(skopeo inspect docker://ghcr.io/ublue-os/silverblue-${{ matrix.image_flavor }}:${{ matrix.major_version }} | jq -r '.Labels["org.opencontainers.image.version"]')
+          ver=$(skopeo inspect docker://ghcr.io/tgeiger/${{ env.IMAGE_NAME }}:${{ matrix.major_version }} | jq -r '.Labels["org.opencontainers.image.version"]')
           echo "VERSION=$ver" >> $GITHUB_OUTPUT
 
       # Build metadata
@@ -141,6 +136,7 @@ jobs:
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@v2
         id: push
+        if: github.event_name != 'pull_request'
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ github.token }}
@@ -150,8 +146,6 @@ jobs:
           registry: ${{ steps.registry_case.outputs.lowercase }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
-          extra-args: |
-            --disable-content-trust
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -160,6 +154,22 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: sigstore/cosign-installer@main
+        if: github.event_name != 'pull_request'
+
+      - name: Sign the container image
+        if: github.event_name != 'pull_request'
+        run: cosign sign -y ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }}@${DIGEST}
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+
+      - name: Verify the pushed tags
+        if: github.event_name != 'pull_request'
+        run: |
+            cosign verify ${{ steps.registry_case.outputs.lowercase }}/${{ env.IMAGE_NAME }} \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            --certificate-identity-regexp "${{ github.server_url }}/${{ github.repository }}"
 
       - name: Echo outputs
         if: github.event_name != 'pull_request'
