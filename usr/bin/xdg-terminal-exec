@@ -6,11 +6,11 @@ if command -v /usr/bin/ptyxis > /dev/null; then
   else
     /usr/bin/ptyxis -- "$@"
   fi
-elif grep '^org\.gnome\.ptyxis$' <<< $(/usr/bin/flatpak list --app --columns=application); then
+elif grep '^org\.gnome\.Ptyxis.Devel$' <<< $(/usr/bin/flatpak list --app --columns=application); then
   if [[ -z "$@" ]]; then
-    /usr/bin/flatpak run org.gnome.ptyxis --new-window
+    /usr/bin/flatpak run org.gnome.Ptyxis.Devel --new-window
   else
-    /usr/bin/flatpak run org.gnome.ptyxis -- "$@"
+    /usr/bin/flatpak run org.gnome.Ptyxis.Devel -- "$@"
   fi
 else
   /usr/bin/gnome-terminal -- "$@"
