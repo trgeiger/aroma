@@ -9,11 +9,13 @@ install -c -m 0755 /tmp/starship /usr/bin && \
 echo 'eval "$(starship init bash)"' >> /etc/bashrc && \
 echo 'eval "$(starship init zsh)"' >> /etc/zshrc
 
-# remove CLI app .desktop files and copr repos
+# modify and remove .desktop files, remove copr repos
 rm -f /usr/share/applications/htop.desktop && \
 rm -f /usr/share/applications/nvtop.desktop && \
 rm -f /usr/share/applications/shredder.desktop && \
-sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/org.gnome.Terminal.desktop 
+# TODO can't hide this until Ptyxis is back on system
+#sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/org.gnome.Terminal.desktop  && \
+sed -i 's@Name=tuned-gui@Name=TuneD Manager@g' /usr/share/applications/tuned-gui.desktop && \
 rm -rf /etc/yum.repos.d/_copr*
 
 # add Flathub repo

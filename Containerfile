@@ -117,16 +117,6 @@ RUN rpm-ostree override replace \
         glibc32 \
         || true
 
-# Install Valve's patched Mesa
-# Install patched switcheroo control with proper discrete GPU support
-RUN rpm-ostree install \
-        mesa-va-drivers-freeworld \
-        mesa-vdpau-drivers-freeworld.x86_64 && \
-    rpm-ostree override replace \
-    --experimental \
-    --from repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
-        switcheroo-control
-
 # removals
 RUN rpm-ostree override remove \
         firefox \
@@ -170,7 +160,8 @@ RUN rpm-ostree override remove \
         libheif-tools \
         libratbag-ratbagd \
         lshw \
-        mesa-va-drivers-freeworld.x86_64 \
+        mesa-va-drivers-freeworld \
+        mesa-vdpau-drivers-freeworld \
         net-tools \
         nvme-cli \
         nvtop \
@@ -185,7 +176,7 @@ RUN rpm-ostree override remove \
         gnome-tweaks \
         gvfs-nfs \
 
-# additions
+# my additions
         tuned \
         tuned-ppd \
         tuned-utils \
@@ -238,12 +229,17 @@ RUN rpm-ostree install \
         gnome-terminal-nautilus \
         yelp && \
     rpm-ostree override replace \
+    --experimental \
+    --from repo=copr:copr.fedorainfracloud.org:sentry:switcheroo-control_discrete \
+        switcheroo-control && \
+    # TODO set up copr for patched gnome stuff
+    rpm-ostree override replace \
         /tmp/rpms/*.rpm
 
 # Gaming-specific changes
 RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
-    rpm-ostree override remove \
-        glibc32 && \
+    # rpm-ostree override remove \
+        # glibc32 && \
     rpm-ostree install \
         clinfo \
         gamescope \
@@ -253,13 +249,19 @@ RUN if [[ "${IMAGE_NAME}" == "aroma" ]]; then \
         mesa-vulkan-drivers.i686 \
         mesa-va-drivers-freeworld.i686 && \
     rpm-ostree override remove \
-        gamemode \
+        gamemode && \
+    wget \
+        $(curl -s https://api.github.com/repos/ilya-zlobintsev/LACT/releases/latest | \
+        jq -r ".assets[] | select(.name | test(\"lact-libadwaita.*fedora\")) | .browser_download_url") \
+        -O /tmp/rpms/lact.rpm && \
+    rpm-ostree install \
+        /tmp/rpms/lact.rpm && \
+    systemctl enable lactd \
     ; fi
 
 # run post-install tasks and clean up
 RUN /tmp/post-install.sh && \
     /tmp/image-info.sh && \
-    sed -i 's@Name=tuned-gui@Name=TuneD Manager@g' /usr/share/applications/tuned-gui.desktop && \
     systemctl enable com.system76.Scheduler.service && \
     systemctl enable tuned.service && \
     systemctl enable dconf-update.service && \
