@@ -35,7 +35,6 @@ RUN wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/rep
         kernel \
         kernel-core \
         kernel-modules \
-        kernel-modules-core \
         kernel-modules-extra \
     --install \
         kernel-cachyos
