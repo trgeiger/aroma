@@ -28,6 +28,18 @@ RUN rpm-ostree install \
         https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
+# Install CachyOS kernel
+RUN wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/repo/fedora-$(rpm -E %fedora)/bieszczaders-kernel-cachyos-fedora-$(rpm -E %fedora).repo -O /etc/yum.repos.d/_copr_cachyos_kernel.repo && \
+    rpm-ostree cliwrap install-to-root / && \
+    rpm-ostree override remove \
+        kernel \
+        kernel-core \
+        kernel-modules \
+        kernel-modules-core \
+        kernel-modules-extra \
+    --install \
+        kernel-cachyos
+
 # Update packages that commonly cause build issues
 RUN rpm-ostree override replace \
     --experimental \

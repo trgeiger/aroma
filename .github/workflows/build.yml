@@ -119,7 +119,7 @@ jobs:
             --target=${{ matrix.base_name }}
 
       - name: Sign kernel
-        uses: EyeCantCU/kernel-signer@v0.1.3
+        uses: EyeCantCU/kernel-signer@main
         with:
           image: ${{ steps.build_image.outputs.image }}
           privkey: ${{ secrets.AROMA_PRIVKEY_18012024 }}
