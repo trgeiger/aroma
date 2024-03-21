@@ -177,7 +177,6 @@ RUN rpm-ostree override remove \
         nvme-cli \
         nvtop \
         openssl \
-        pipewire-codec-aptx \
         smartmontools \
         solaar-udev \
         symlinks \
