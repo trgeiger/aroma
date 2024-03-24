@@ -35,12 +35,18 @@ RUN wget https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos/rep
         kernel \
         kernel-core \
         kernel-modules \
+        kernel-modules-core \
         kernel-modules-extra \
     --install \
         kernel-cachyos
 
 # Update packages that commonly cause build issues
 RUN rpm-ostree override replace \
+    --experimental \
+    --from repo=updates-testing \
+        vim-data \
+        vim-minimal && \
+    rpm-ostree override replace \
     --experimental \
     --from repo=updates \
         vulkan-loader \
@@ -184,7 +190,6 @@ RUN rpm-ostree override remove \
         adw-gtk3-theme \
         gnome-epub-thumbnailer \
         gnome-tweaks \
-        gvfs-nfs \
 
 # my additions
         tuned \
@@ -236,6 +241,7 @@ RUN rpm-ostree install \
         gnome-software-rpm-ostree \
         gnome-tour \
         gnome-classic-session \
+        gnome-classic-session-xsession \
         gnome-terminal-nautilus \
         yelp && \
     rpm-ostree override replace \
